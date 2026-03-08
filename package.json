@@ -1,11 +1,11 @@
 {
   "name": "tattoo-studio",
-  "description": "Tattoo Studio Management System",
+  "description": "Türkçe dövmeci stüdyo yönetim platformu",
   "repository": {
-    "url": "https://github.com/username/tattoo-studio"
+    "url": "https://github.com/ef12a4/tattoo-studio"
   },
   "scripts": {
-    "start": "gunicorn --bind 0.0.0.0:$PORT wsgi:app"
+    "start": "python minimal_app.py"
   },
   "dependencies": {
     "gunicorn": "*"
@@ -14,6 +14,6 @@
     "FLASK_ENV": "production"
   },
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   }
 }
