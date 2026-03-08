@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Sanatçı Web Siteleri - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}Sanatçı Web Siteleri{% endblock %}
+
+{% block page_actions %}
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWebsiteModal">
+    <i class="bi bi-plus-circle"></i> Yeni Web Sitesi Oluştur
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    {% if websites %}
+    {% for website in websites %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="card-title">{{ website.artist.name }}</h5>
+                        <small class="text-muted">{{ website.artist.specialty or 'Sanatçı' }}</small>
+                    </div>
+                    <div>
+                        {% if website.is_active %}
+                        <span class="badge bg-success">Aktif</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Pasif</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Subdomain:</strong> {{ website.subdomain }}.tattoostudio.com</p>
+                    {% if website.custom_domain %}
+                    <p class="mb-1"><strong>Custom Domain:</strong> {{ website.custom_domain }}</p>
+                    {% endif %}
+                    <p class="mb-1"><strong>Tema:</strong> {{ website.theme }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex gap-2 align-items-center">
+                        <span class="badge" style="background-color: #000000; color: #ffffff;">Ana Renk</span>
+                        <span class="badge" style="background-color: #ff6b6b; color: white;">Vurgu</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2">
+                    <a href="http://{{ website.subdomain }}.localhost:5000" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-eye"></i> Görüntüle
+                    </a>
+                    <a href="{{ url_for('website_builder', id=website.id) }}" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-tools"></i> Builder
+                    </a>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="editWebsite('{{ website.id }}')">
+                        <i class="bi bi-pencil"></i> Düzenle
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" onclick="toggleWebsite('{{ website.id }}')">
+                        <i class="bi bi-power"></i> {{ 'Pasif' if website.is_active else 'Aktif' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="bi bi-globe text-muted" style="font-size: 4rem;"></i>
+            <h5 class="mt-3 text-muted">Henüz web sitesi oluşturulmadı</h5>
+            <p class="text-muted">Sanatçılarınız için kişisel web siteleri oluşturun.</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createWebsiteModal">
+                <i class="bi bi-plus-circle"></i> İlk Web Sitesini Oluştur
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Web Sitesi Oluştur Modal -->
+<div class="modal fade" id="createWebsiteModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Web Sitesi Oluştur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('create_website') }}">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="artist_id" class="form-label">Sanatçı *</label>
+                            <select class="form-control" id="artist_id" name="artist_id" required>
+                                <option value="">Sanatçı Seçin</option>
+                                {% for artist in available_artists %}
+                                <option value="{{ artist.id }}">{{ artist.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="subdomain" class="form-label">Subdomain *</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="subdomain" name="subdomain" required>
+                                <span class="input-group-text">.tattoostudio.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="theme" class="form-label">Tema</label>
+                            <select class="form-control" id="theme" name="theme">
+                                <option value="default">Varsayılan</option>
+                                <option value="dark">Koyu</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="colorful">Renkli</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="custom_domain" class="form-label">Custom Domain</label>
+                            <input type="text" class="form-control" id="custom_domain" name="custom_domain" placeholder="ornek.com">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="primary_color" class="form-label">Ana Renk</label>
+                            <input type="color" class="form-control form-control-color" id="primary_color" name="primary_color" value="#000000">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="secondary_color" class="form-label">İkincil Renk</label>
+                            <input type="color" class="form-control form-control-color" id="secondary_color" name="secondary_color" value="#ffffff">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="accent_color" class="form-label">Vurgu Rengi</label>
+                            <input type="color" class="form-control form-control-color" id="accent_color" name="accent_color" value="#ff6b6b">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bio_title" class="form-label">Bio Başlığı</label>
+                        <input type="text" class="form-control" id="bio_title" name="bio_title" placeholder="Profesyonel Dövme Sanatçısı">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="about_text" class="form-label">Hakkımda Metni</label>
+                        <textarea class="form-control" id="about_text" name="about_text" rows="3" placeholder="Sanatçı hakkında detaylı bilgi..."></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_email" class="form-label">İletişim E-postası</label>
+                            <input type="email" class="form-control" id="contact_email" name="contact_email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_phone" class="form-label">İletişim Telefonu</label>
+                            <input type="tel" class="form-control" id="contact_phone" name="contact_phone">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram_url" class="form-label">Instagram URL</label>
+                            <input type="url" class="form-control" id="instagram_url" name="instagram_url" placeholder="https://instagram.com/kullanici">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="facebook_url" class="form-label">Facebook URL</label>
+                            <input type="url" class="form-control" id="facebook_url" name="facebook_url" placeholder="https://facebook.com/sayfa">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="twitter_url" class="form-label">Twitter URL</label>
+                            <input type="url" class="form-control" id="twitter_url" name="twitter_url" placeholder="https://twitter.com/kullanici">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="google_analytics_id" class="form-label">Google Analytics ID</label>
+                            <input type="text" class="form-control" id="google_analytics_id" name="google_analytics_id" placeholder="G-XXXXXXXXXX">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Web Sitesi Oluştur</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleWebsite(id) {
+    if (confirm('Web sitesi durumunu değiştirmek istediğinizden emin misiniz?')) {
+        window.location.href = '/websites/toggle/' + id;
+    }
+}
+
+function editWebsite(id) {
+    // Düzenleme formu açılacak
+    alert('Düzenleme özelliği yakında eklenecek!');
+}
+</script>
+{% endblock %}

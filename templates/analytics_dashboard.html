@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h2">Analytics Dashboard</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn-animated" onclick="refreshData()">
+                            <i class="bi bi-arrow-clockwise"></i> Yenile
+                        </button>
+                        <button class="btn-animated" onclick="exportReport()">
+                            <i class="bi bi-download"></i> Rapor İndir
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="content-card text-center">
+                            <div class="metric-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <h3 class="metric-number">1,234</h3>
+                            <p class="metric-label">Toplam Ziyaretçi</p>
+                            <div class="metric-change positive">
+                                <i class="bi bi-arrow-up"></i> +12.5%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="content-card text-center">
+                            <div class="metric-icon">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                            <h3 class="metric-number">456</h3>
+                            <p class="metric-label">Randevu</p>
+                            <div class="metric-change positive">
+                                <i class="bi bi-arrow-up"></i> +8.3%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="content-card text-center">
+                            <div class="metric-icon">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <h3 class="metric-number">₺89,456</h3>
+                            <p class="metric-label">Gelir</p>
+                            <div class="metric-change positive">
+                                <i class="bi bi-arrow-up"></i> +23.7%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="content-card text-center">
+                            <div class="metric-icon">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <h3 class="metric-number">4.8</h3>
+                            <p class="metric-label">Ortalama Puan</p>
+                            <div class="metric-change positive">
+                                <i class="bi bi-arrow-up"></i> +0.3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Section -->
+                <div class="row">
+                    <div class="col-md-8 mb-4">
+                        <div class="content-card">
+                            <h5 class="mb-3">Gelir Trendi</h5>
+                            <canvas id="revenueChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="content-card">
+                            <h5 class="mb-3">Hizmet Dağılımı</h5>
+                            <canvas id="serviceChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="content-card">
+                            <h5 class="mb-3">Son Aktiviteler</h5>
+                            <div class="activity-list">
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="bi bi-calendar-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Yeni Randevu</div>
+                                        <div class="activity-time">2 saat önce</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="bi bi-person-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Yeni Müşteri Kaydı</div>
+                                        <div class="activity-time">5 saat önce</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Yeni Portfolyo Eseri</div>
+                                        <div class="activity-time">1 gün önce</div>
+                                    </div>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-icon">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-title">Ödeme Alındı</div>
+                                        <div class="activity-time">2 gün önce</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="content-card">
+                            <h5 class="mb-3">Popüler Hizmetler</h5>
+                            <div class="popular-services">
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <div class="service-name">Traditional Tattoo</div>
+                                        <div class="service-count">234 randevu</div>
+                                    </div>
+                                    <div class="service-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 85%; background: var(--secondary-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <div class="service-name">Realistic Portrait</div>
+                                        <div class="service-count">156 randevu</div>
+                                    </div>
+                                    <div class="service-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 65%; background: var(--accent-color);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <div class="service-name">Japanese Style</div>
+                                        <div class="service-count">98 randevu</div>
+                                    </div>
+                                    <div class="service-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 45%; background: var(--gradient-3);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="service-item">
+                                    <div class="service-info">
+                                        <div class="service-name">Geometric</div>
+                                        <div class="service-count">67 randevu</div>
+                                    </div>
+                                    <div class="service-progress">
+                                        <div class="progress">
+                                            <div class="progress-bar" style="width: 30%; background: var(--gradient-1);"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Chart.js implementation with animations
+function initCharts() {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'],
+            datasets: [{
+                label: 'Gelir',
+                data: [45000, 52000, 48000, 61000, 58000, 89000],
+                borderColor: 'rgb(255, 107, 53)',
+                backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₺' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    // Service Chart
+    const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+    new Chart(serviceCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Traditional', 'Realistic', 'Japanese', 'Geometric'],
+            datasets: [{
+                data: [35, 25, 20, 20],
+                backgroundColor: [
+                    'rgba(255, 107, 53, 0.8)',
+                    'rgba(78, 205, 196, 0.8)',
+                    'rgba(102, 126, 234, 0.8)',
+                    'rgba(118, 75, 162, 0.8)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function refreshData() {
+    // Show loading state
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="bx bx-loader-alt"></i> Yenileniyor...';
+    btn.disabled = true;
+    
+    // Simulate data refresh
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        showNotification('Veriler başarıyla yenilendi!', 'success');
+        
+        // Reinitialize charts with new data
+        initCharts();
+    }, 2000);
+}
+
+function exportReport() {
+    // Simulate report export
+    showNotification('Rapor hazırlanıyor...', 'info');
+    
+    setTimeout(() => {
+        // Create CSV content
+        const csvContent = "Tarih,Randevu,Gelir,Müşteri\n2024-01-01,45,₺12,000,23\n2024-01-02,52,₺15,000,28";
+        
+        // Create download link
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'analytics_report.csv';
+        a.click();
+        
+        showNotification('Rapor başarıyla indirildi!', 'success');
+    }, 1500);
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease;
+    `;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if Chart.js is loaded, if not add it
+    if (typeof Chart === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        script.onload = initCharts;
+        document.head.appendChild(script);
+    } else {
+        initCharts();
+    }
+    
+    // Add hover effects to metric cards
+    const metricCards = document.querySelectorAll('.metric-number');
+    metricCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.color = 'var(--secondary-color)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.color = '';
+        });
+    });
+    
+    // Add animation to activity items
+    const activityItems = document.querySelectorAll('.activity-item');
+    activityItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, index * 100);
+    });
+    
+    // Add hover effect to service items
+    const serviceItems = document.querySelectorAll('.service-item');
+    serviceItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(5px) scale(1.02)';
+            this.style.boxShadow = '0 5px 15px rgba(255, 107, 53, 0.2)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0) scale(1)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+
+<style>
+.metric-icon {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+.metric-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 5px;
+    transition: all 0.3s ease;
+}
+
+.metric-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.metric-change {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+.metric-change.positive {
+    color: var(--accent-color);
+}
+
+.metric-change.negative {
+    color: #dc3545;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-title {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-name {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.service-count {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.service-progress {
+    width: 100px;
+}
+
+.progress {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+{% endblock %}

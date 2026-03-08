@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}Tattoo Portfolyosu{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-white mb-3">Tattoo Portfolyosu</h1>
+                <p class="lead text-light opacity-75">Sanatçılarımızın ödüllü dövme tasarımları</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <button class="portfolio-filter-btn active" data-filter="all">Tümü</button>
+                <button class="portfolio-filter-btn" data-filter="realism">Realism</button>
+                <button class="portfolio-filter-btn" data-filter="traditional">Geleneksel</button>
+                <button class="portfolio-filter-btn" data-filter="japanese">Japon</button>
+                <button class="portfolio-filter-btn" data-filter="geometric">Geometrik</button>
+                <button class="portfolio-filter-btn" data-filter="watercolor">Watercolor</button>
+                <button class="portfolio-filter-btn" data-filter="blackwork">Blackwork</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Grid -->
+    <div class="row portfolio-grid" id="portfolioGrid">
+        <!-- Tattoo Work 1 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="realism">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1572810203172-9c2a4a3e8e2c?w=400&h=400&fit=crop" alt="Realism Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Portre Dövme</h5>
+                            <p class="portfolio-artist">Ali Demir</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-primary">Realism</span>
+                                <span class="text-white">8 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tattoo Work 2 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="traditional">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1610439235244-7bcfb95e02a3?w=400&h=400&fit=crop" alt="Traditional Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Geleneksel Rose</h5>
+                            <p class="portfolio-artist">Mehmet Özkan</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-danger">Traditional</span>
+                                <span class="text-white">4 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tattoo Work 3 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="japanese">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1572810203172-9c2a4a3e8e2c?w=400&h=400&fit=crop" alt="Japanese Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Ejderha</h5>
+                            <p class="portfolio-artist">Mehmet Özkan</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-success">Japanese</span>
+                                <span class="text-white">12 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tattoo Work 4 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="geometric">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1610439235244-7bcfb95e02a3?w=400&h=400&fit=crop" alt="Geometric Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Sacred Geometry</h5>
+                            <p class="portfolio-artist">Ayşe Yılmaz</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-info">Geometric</span>
+                                <span class="text-white">6 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tattoo Work 5 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="watercolor">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1572810203172-9c2a4a3e8e2c?w=400&h=400&fit=crop" alt="Watercolor Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Watercolor Lotus</h5>
+                            <p class="portfolio-artist">Ayşe Yılmaz</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-warning">Watercolor</span>
+                                <span class="text-white">5 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tattoo Work 6 -->
+        <div class="col-lg-4 col-md-6 mb-4 portfolio-item" data-category="blackwork">
+            <div class="portfolio-card">
+                <div class="portfolio-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1610439235244-7bcfb95e02a3?w=400&h=400&fit=crop" alt="Blackwork Tattoo" class="portfolio-image">
+                    <div class="portfolio-overlay">
+                        <div class="portfolio-content">
+                            <h5 class="portfolio-title">Blackwork Design</h5>
+                            <p class="portfolio-artist">Ali Demir</p>
+                            <div class="portfolio-meta">
+                                <span class="badge bg-dark">Blackwork</span>
+                                <span class="text-white">3 saat</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load More Button -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <button class="btn btn-primary btn-lg" id="loadMoreBtn">
+                <i class="bi bi-arrow-down-circle"></i> Daha Fazla Yükle
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+.portfolio-filter-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--secondary-color);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.portfolio-filter-btn:hover,
+.portfolio-filter-btn.active {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+}
+
+.portfolio-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+}
+
+.portfolio-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+    border-color: var(--secondary-color);
+}
+
+.portfolio-image-wrapper {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+}
+
+.portfolio-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .portfolio-image {
+    transform: scale(1.1);
+}
+
+.portfolio-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.portfolio-card:hover .portfolio-overlay {
+    opacity: 1;
+}
+
+.portfolio-content {
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.portfolio-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.portfolio-artist {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.portfolio-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.portfolio-item {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.portfolio-item.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .portfolio-grid {
+        justify-content: center;
+    }
+    
+    .portfolio-filter-btn {
+        font-size: 0.9rem;
+        padding: 6px 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
+    const portfolioItems = document.querySelectorAll('.portfolio-item');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+    // Filter functionality
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter items
+            portfolioItems.forEach(item => {
+                if (filter === 'all' || item.dataset.category === filter) {
+                    item.classList.remove('hidden');
+                    item.style.animation = 'fadeInUp 0.6s ease';
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+
+    // Load more functionality (simulation)
+    loadMoreBtn.addEventListener('click', function() {
+        this.innerHTML = '<i class="bi bi-hourglass-split"></i> Yükleniyor...';
+        
+        setTimeout(() => {
+            // Add more items (simulation)
+            const grid = document.getElementById('portfolioGrid');
+            const newItems = [
+                { category: 'realism', title: 'Wildlife Portrait', artist: 'Ali Demir', duration: '10 saat' },
+                { category: 'traditional', title: 'Anchor Tattoo', artist: 'Mehmet Özkan', duration: '3 saat' },
+                { category: 'geometric', title: 'Mandala', artist: 'Ayşe Yılmaz', duration: '7 saat' }
+            ];
+
+            newItems.forEach((item, index) => {
+                const col = document.createElement('div');
+                col.className = 'col-lg-4 col-md-6 mb-4 portfolio-item';
+                col.dataset.category = item.category;
+                col.style.animation = `fadeInUp 0.6s ease ${index * 0.1}s both`;
+                
+                col.innerHTML = `
+                    <div class="portfolio-card">
+                        <div class="portfolio-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1572810203172-9c2a4a3e8e2c?w=400&h=400&fit=crop" alt="${item.title}" class="portfolio-image">
+                            <div class="portfolio-overlay">
+                                <div class="portfolio-content">
+                                    <h5 class="portfolio-title">${item.title}</h5>
+                                    <p class="portfolio-artist">${item.artist}</p>
+                                    <div class="portfolio-meta">
+                                        <span class="badge bg-primary">${item.category}</span>
+                                        <span class="text-white">${item.duration}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(col);
+            });
+
+            this.innerHTML = '<i class="bi bi-check-circle"></i> Tümü Yüklendi';
+            this.disabled = true;
+            this.classList.remove('btn-primary');
+            this.classList.add('btn-success');
+        }, 1500);
+    });
+
+    // Add parallax effect
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const cards = document.querySelectorAll('.portfolio-card');
+        
+        cards.forEach((card, index) => {
+            const speed = 0.5 + (index * 0.1);
+            card.style.transform = `translateY(${scrolled * speed * 0.1}px)`;
+        });
+    });
+});
+</script>
+{% endblock %}

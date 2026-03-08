@@ -1,0 +1,19 @@
+{
+  "name": "tattoo-studio",
+  "description": "Tattoo Studio Management System",
+  "repository": {
+    "url": "https://github.com/username/tattoo-studio"
+  },
+  "scripts": {
+    "start": "gunicorn --bind 0.0.0.0:$PORT wsgi:app"
+  },
+  "dependencies": {
+    "gunicorn": "*"
+  },
+  "env": {
+    "FLASK_ENV": "production"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}

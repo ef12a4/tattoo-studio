@@ -1,0 +1,566 @@
+{% extends "base.html" %}
+
+{% block title %}Website Builder - {{ website.name or 'Yeni Site' }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h2">Website Builder</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn-animated" onclick="addNewSection()">
+                            <i class="bi bi-plus-circle"></i> Bölüm Ekle
+                        </button>
+                        <button class="btn-animated" onclick="previewWebsite()">
+                            <i class="bi bi-eye"></i> Önizle
+                        </button>
+                        <button class="btn-animated" onclick="publishWebsite()">
+                            <i class="bi bi-upload"></i> Yayınla
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 3D Carousel Preview -->
+                <div class="mb-4">
+                    <div class="carousel-3d">
+                        <div class="carousel-container">
+                            <div class="carousel-slide active">
+                                <div class="slide-content">
+                                    <h4>Ana Sayfa</h4>
+                                    <p>Hero section with parallax effects</p>
+                                    <div class="mini-preview">
+                                        <div class="mini-hero">
+                                            <i class="bi bi-palette"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <h4>Portfolyo</h4>
+                                    <p>Card slider with 3D effects</p>
+                                    <div class="mini-preview">
+                                        <div class="mini-cards">
+                                            <i class="bi bi-images"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <h4>Hakkımızda</h4>
+                                    <p>About us with timeline</p>
+                                    <div class="mini-preview">
+                                        <div class="mini-about">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <h4>İletişim</h4>
+                                    <p>Contact form with animations</p>
+                                    <div class="mini-preview">
+                                        <div class="mini-contact">
+                                            <i class="bi bi-envelope"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Carousel Controls -->
+                        <div class="carousel-controls">
+                            <button class="carousel-btn" onclick="changeSlide(-1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button class="carousel-btn" onclick="changeSlide(1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Carousel Dots -->
+                        <div class="carousel-dots">
+                            <span class="dot active" onclick="goToSlide(0)"></span>
+                            <span class="dot" onclick="goToSlide(1)"></span>
+                            <span class="dot" onclick="goToSlide(2)"></span>
+                            <span class="dot" onclick="goToSlide(3)"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Builder Interface -->
+                <div class="builder-interface">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="content-card">
+                                <h5>Component'ler</h5>
+                                <div class="component-list">
+                                    <div class="component-item" draggable="true" data-component="hero">
+                                        <i class="bi bi-palette"></i> Hero Section
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="about">
+                                        <i class="bi bi-people"></i> Hakkımızda
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="services">
+                                        <i class="bi bi-star"></i> Hizmetler
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="portfolio">
+                                        <i class="bi bi-images"></i> Portfolyo
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="testimonials">
+                                        <i class="bi bi-chat-quote"></i> Referanslar
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="contact">
+                                        <i class="bi bi-envelope"></i> İletişim
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="gallery">
+                                        <i class="bi bi-grid"></i> Galeri
+                                    </div>
+                                    <div class="component-item" draggable="true" data-component="timeline">
+                                        <i class="bi bi-clock-history"></i> Zaman Çizelgesi
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="content-card">
+                                <h5>Özelleştirme</h5>
+                                <div class="customization-panel">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tema</label>
+                                        <select class="form-control" id="themeSelect">
+                                            <option value="watercolor">Watercolor</option>
+                                            <option value="geometric">Geometric</option>
+                                            <option value="minimalist">Minimalist</option>
+                                            <option value="dark">Dark</option>
+                                            <option value="modern">Modern</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Ana Renk</label>
+                                        <input type="color" class="form-control" id="primaryColor" value="{{ website.primary_color or '#ff6b35' }}">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">İkincil Renk</label>
+                                        <input type="color" class="form-control" id="secondaryColor" value="{{ website.secondary_color or '#4ecdc4' }}">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Font</label>
+                                        <select class="form-control" id="fontSelect">
+                                            <option value="Inter">Inter</option>
+                                            <option value="Roboto">Roboto</option>
+                                            <option value="Open Sans">Open Sans</option>
+                                            <option value="Montserrat">Montserrat</option>
+                                            <option value="Playfair Display">Playfair Display</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Arka Plan</label>
+                                        <select class="form-control" id="backgroundType">
+                                            <option value="gradient">Gradient</option>
+                                            <option value="image">Image</option>
+                                            <option value="pattern">Pattern</option>
+                                            <option value="solid">Solid</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="content-card">
+                                <h5>Settings</h5>
+                                <div class="settings-panel">
+                                    <div class="mb-3">
+                                        <label class="form-label">Site URL</label>
+                                        <input type="text" class="form-control" value="{{ website.url or '' }}" placeholder="https://{{ website.subdomain or 'mysite' }}.tato.com">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">SEO Title</label>
+                                        <input type="text" class="form-control" value="{{ website.seo_title or '' }}" placeholder="{{ artist.name }} - Tattoo Studio">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">SEO Description</label>
+                                        <textarea class="form-control" rows="2">{{ website.seo_description or '' }}</textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="enableAnalytics" {{ 'checked' if website.enable_analytics else '' }}>
+                                            <label class="form-check-label" for="enableAnalytics">Analytics Etkin</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="enableSSL" {{ 'checked' if website.enable_ssl else '' }}>
+                                            <label class="form-check-label" for="enableSSL">SSL Etkin</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentSlide = 0;
+const totalSlides = 4;
+
+function changeSlide(direction) {
+    currentSlide += direction;
+    
+    if (currentSlide < 0) {
+        currentSlide = totalSlides - 1;
+    } else if (currentSlide >= totalSlides) {
+        currentSlide = 0;
+    }
+    
+    updateCarousel();
+}
+
+function goToSlide(slideIndex) {
+    currentSlide = slideIndex;
+    updateCarousel();
+}
+
+function updateCarousel() {
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    
+    slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+    });
+    
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+    });
+}
+
+function addNewSection() {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade show';
+    modal.style.display = 'block';
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Bölüm Ekle</h5>
+                    <button type="button" class="btn-close" onclick="this.closest('.modal').remove()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Bölüm Adı</label>
+                        <input type="text" class="form-control" id="sectionName" placeholder="Örn: Hizmetler">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bölüm Tipi</label>
+                        <select class="form-control" id="sectionType">
+                            <option value="hero">Hero Section</option>
+                            <option value="about">Hakkımızda</option>
+                            <option value="services">Hizmetler</option>
+                            <option value="portfolio">Portfolyo</option>
+                            <option value="testimonials">Referanslar</option>
+                            <option value="contact">İletişim</option>
+                            <option value="gallery">Galeri</option>
+                            <option value="timeline">Zaman Çizelgesi</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">İçerik</label>
+                        <textarea class="form-control" rows="4" id="sectionContent" placeholder="Bölüm içeriği..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">İptal</button>
+                    <button type="button" class="btn-animated" onclick="saveSection()">
+                        <i class="bi bi-check-circle"></i> Ekle
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+}
+
+function saveSection() {
+    const name = document.getElementById('sectionName').value;
+    const type = document.getElementById('sectionType').value;
+    const content = document.getElementById('sectionContent').value;
+    
+    // Simulate saving
+    console.log('Section saved:', { name, type, content });
+    
+    // Show success message
+    document.querySelector('.modal').remove();
+    showNotification('Bölüm başarıyla eklendi!', 'success');
+}
+
+function previewWebsite() {
+    window.open('/preview/{{ website.id }}', '_blank');
+}
+
+function publishWebsite() {
+    if (confirm('Websitenizi yayınlamak istediğinizden emin misiniz?')) {
+        // Simulate publishing
+        showNotification('Websiteniz yayınlanıyor...', 'info');
+        
+        setTimeout(() => {
+            showNotification('Websiteniz başarıyla yayınlandı!', 'success');
+        }, 3000);
+    }
+}
+
+// Drag and Drop functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const componentItems = document.querySelectorAll('.component-item');
+    const dropZone = document.querySelector('.builder-interface');
+    
+    componentItems.forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('component', this.dataset.component);
+            this.style.opacity = '0.5';
+        });
+        
+        item.addEventListener('dragend', function() {
+            this.style.opacity = '1';
+        });
+    });
+    
+    if (dropZone) {
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.backgroundColor = 'rgba(255, 107, 53, 0.1)';
+        });
+        
+        dropZone.addEventListener('dragleave', function() {
+            this.style.backgroundColor = '';
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            const component = e.dataTransfer.getData('component');
+            this.style.backgroundColor = '';
+            
+            // Add component to website
+            console.log('Component dropped:', component);
+            showNotification(`${component} eklendi!`, 'success');
+        });
+    }
+    
+    // Auto-rotate carousel
+    setInterval(() => {
+        changeSlide(1);
+    }, 5000);
+});
+
+// Theme customization
+document.getElementById('themeSelect')?.addEventListener('change', function() {
+    const theme = this.value;
+    document.body.className = `theme-${theme}`;
+});
+
+document.getElementById('primaryColor')?.addEventListener('change', function() {
+    document.documentElement.style.setProperty('--primary-color', this.value);
+});
+
+document.getElementById('secondaryColor')?.addEventListener('change', function() {
+    document.documentElement.style.setProperty('--secondary-color', this.value);
+});
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease;
+    `;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+</script>
+
+<style>
+.carousel-3d {
+    perspective: 1000px;
+    margin-bottom: 30px;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.6s ease;
+    transform-style: preserve-3d;
+}
+
+.carousel-slide.active {
+    transform: translateZ(0) rotateY(0);
+}
+
+.carousel-slide:not(.active) {
+    transform: translateZ(-200px) rotateY(45deg);
+    opacity: 0.7;
+}
+
+.slide-content {
+    text-align: center;
+    color: white;
+}
+
+.mini-preview {
+    margin-top: 15px;
+}
+
+.mini-preview > div {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.carousel-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--secondary-color);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+    background: var(--secondary-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--secondary-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background: var(--secondary-color);
+    transform: scale(1.3);
+}
+
+.component-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: grab;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.component-item:hover {
+    background: rgba(255, 107, 53, 0.1);
+    transform: translateY(-2px);
+}
+
+.component-item:active {
+    cursor: grabbing;
+}
+
+.builder-interface {
+    min-height: 400px;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.builder-interface.dragover {
+    background: rgba(255, 107, 53, 0.05);
+    border-color: var(--secondary-color);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+{% endblock %}

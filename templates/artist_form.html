@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Sanatçı Düzenle" if artist else "Yeni Sanatçı" }} - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}{{ "Sanatçı Düzenle" if artist else "Yeni Sanatçı Ekle" }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Ad Soyad *</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ artist.name if artist else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-posta *</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ artist.email if artist else '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ artist.phone if artist else '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="experience_years" class="form-label">Deneyim (Yıl)</label>
+                            <input type="number" class="form-control" id="experience_years" name="experience_years" value="{{ artist.experience_years if artist else '' }}" min="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="specialty" class="form-label">Uzmanlık Alanları</label>
+                        <input type="text" class="form-control" id="specialty" name="specialty" value="{{ artist.specialty if artist else '' }}" placeholder="Örn: Realist, Portre, Geometrik">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Biyografi</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="4">{{ artist.bio if artist else '' }}</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram" class="form-label">Instagram</label>
+                            <div class="input-group">
+                                <span class="input-group-text">@</span>
+                                <input type="text" class="form-control" id="instagram" name="instagram" value="{{ artist.instagram if artist else '' }}" placeholder="kullaniciadi">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="portfolio_url" class="form-label">Portfolyo URL</label>
+                            <input type="url" class="form-control" id="portfolio_url" name="portfolio_url" value="{{ artist.portfolio_url if artist else '' }}" placeholder="https://...">
+                        </div>
+                    </div>
+
+                    {% if artist %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {{ 'checked' if artist.is_active else '' }}>
+                            <label class="form-check-label" for="is_active">
+                                Aktif Sanatçı
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ "Güncelle" if artist else "Kaydet" }}
+                        </button>
+                        <a href="{{ url_for('artists') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if artist %}
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Sanatçı Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Kayıt Tarihi:</strong> {{ artist.created_at.strftime('%d.%m.%Y') }}</p>
+                <p><strong>Durum:</strong> 
+                    {% if artist.is_active %}
+                    <span class="badge bg-success">Aktif</span>
+                    {% else %}
+                    <span class="badge bg-danger">Pasif</span>
+                    {% endif %}
+                </p>
+                {% if artist.appointments %}
+                <p><strong>Toplam Randevu:</strong> {{ artist.appointments|length }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+services:
+  # Type of service to run
+  type: web
+  
+  # Runtime environment
+  runtime: python
+  
+  # Build command
+  buildCommand: pip install -r requirements.txt
+  
+  # Start command
+  startCommand: gunicorn --bind 0.0.0.0:$PORT wsgi:app
+  
+  # Health check
+  healthCheckPath: /health
+  
+  # Auto-deploy
+  autoDeploy: true
+  
+  # Environment variables
+  env:
+  - key: FLASK_ENV
+    value: production
+  - key: PYTHON_VERSION
+    value: 3.9
+    
+# Service versions
+version: "1"

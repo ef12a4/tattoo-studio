@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Randevu Düzenle" if appointment else "Yeni Randevu" }} - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}{{ "Randevu Düzenle" if appointment else "Yeni Randevu Oluştur" }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="customer_id" class="form-label">Müşteri *</label>
+                            <select class="form-control" id="customer_id" name="customer_id" required>
+                                <option value="">Müşteri Seçin</option>
+                                {% for customer in customers %}
+                                <option value="{{ customer.id }}" {{ 'selected' if appointment and appointment.customer_id == customer.id else '' }}>
+                                    {{ customer.name }} - {{ customer.email }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="artist_id" class="form-label">Sanatçı *</label>
+                            <select class="form-control" id="artist_id" name="artist_id" required>
+                                <option value="">Sanatçı Seçin</option>
+                                {% for artist in artists %}
+                                <option value="{{ artist.id }}" {{ 'selected' if appointment and appointment.artist_id == artist.id else '' }}>
+                                    {{ artist.name }} - {{ artist.specialty or 'Genel' }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date_time" class="form-label">Randevu Tarihi ve Saati *</label>
+                            <input type="datetime-local" class="form-control" id="date_time" name="date_time" 
+                                   value="{{ appointment.date_time.strftime('%Y-%m-%dT%H:%M') if appointment else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="duration" class="form-label">Tahmini Süre (Dakika)</label>
+                            <input type="number" class="form-control" id="duration" name="duration" 
+                                   value="{{ appointment.duration if appointment else '' }}" min="30" step="30">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="deposit_amount" class="form-label">Kapora (₺)</label>
+                            <input type="number" class="form-control" id="deposit_amount" name="deposit_amount" 
+                                   value="{{ appointment.deposit_amount if appointment else '' }}" min="0" step="0.01">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="total_price" class="form-label">Toplam Fiyat (₺)</label>
+                            <input type="number" class="form-control" id="total_price" name="total_price" 
+                                   value="{{ appointment.total_price if appointment else '' }}" min="0" step="0.01">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="design_description" class="form-label">Dövme Açıklaması</label>
+                        <textarea class="form-control" id="design_description" name="design_description" rows="4" 
+                                  placeholder="Müşterinin istediği dövme tasarımı hakkında bilgiler...">{{ appointment.design_description if appointment else '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notlar</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Ek notlar...">{{ appointment.notes if appointment else '' }}</textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ "Güncelle" if appointment else "Kaydet" }}
+                        </button>
+                        <a href="{{ url_for('appointments') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">İpuçları</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-info-circle text-primary"></i> Randevu tarihini dikkatli seçin</li>
+                    <li><i class="bi bi-info-circle text-primary"></i> Sanatçının müsaitliğini kontrol edin</li>
+                    <li><i class="bi bi-info-circle text-primary"></i> Kapora almayı unutmayın</li>
+                    <li><i class="bi bi-info-circle text-primary"></i> Tasarım detaylarını belirtin</li>
+                </ul>
+            </div>
+        </div>
+
+        {% if appointment %}
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Randevu Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Oluşturulma:</strong> {{ appointment.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+                <p><strong>Durum:</strong> 
+                    <span class="badge bg-{{ 'success' if appointment.status == 'completed' else 'warning' if appointment.status == 'scheduled' else 'danger' }}">
+                        {{ appointment.status }}
+                    </span>
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

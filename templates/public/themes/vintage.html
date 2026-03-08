@@ -1,0 +1,241 @@
+<style>
+/* Vintage Theme */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Libre+Baskerville&display=swap');
+
+:root {
+    --primary-color: #2c1810;
+    --secondary-color: #f4e8d0;
+    --accent-color: #8b4513;
+    --background-color: #faf6f2;
+    --text-color: #2c1810;
+    --vintage-brown: #8b4513;
+    --vintage-cream: #f4e8d0;
+    --vintage-dark: #2c1810;
+}
+
+body {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    font-family: 'Libre Baskerville', serif !important;
+}
+
+.navbar {
+    background-color: var(--vintage-dark) !important;
+    border-bottom: 3px solid var(--vintage-brown) !important;
+}
+
+.navbar-brand, .navbar-nav .nav-link {
+    color: var(--vintage-cream) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+}
+
+.hero-section {
+    background: 
+        linear-gradient(rgba(44, 24, 16, 0.8), rgba(44, 24, 16, 0.8)),
+        url('https://picsum.photos/seed/vintage/1920/1080.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    position: relative;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(244, 232, 208, 0.05) 10px,
+            rgba(244, 232, 208, 0.05) 20px
+        );
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif !important;
+    color: var(--vintage-dark) !important;
+    border-bottom: 3px solid var(--vintage-brown) !important;
+    position: relative;
+}
+
+.section-title::after {
+    content: '❦';
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--vintage-brown);
+}
+
+.btn-primary {
+    background-color: var(--vintage-brown) !important;
+    border: 2px solid var(--vintage-brown) !important;
+    color: var(--vintage-cream) !important;
+    font-family: 'Playfair Display', serif !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(244, 232, 208, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.card {
+    background-color: var(--vintage-cream) !important;
+    border: 2px solid var(--vintage-brown) !important;
+    box-shadow: 0 4px 8px rgba(44, 24, 16, 0.2) !important;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: 
+        repeating-linear-gradient(
+            45deg,
+            var(--vintage-brown),
+            var(--vintage-brown) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+    z-index: -1;
+}
+
+.portfolio-item {
+    border: 3px solid var(--vintage-brown) !important;
+    background-color: var(--vintage-cream) !important;
+    position: relative;
+}
+
+.portfolio-item::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: var(--vintage-brown);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.service-card {
+    background-color: var(--vintage-cream) !important;
+    border: 2px solid var(--vintage-brown) !important;
+    text-align: center;
+    position: relative;
+}
+
+.service-card::before {
+    content: '✦';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--background-color);
+    padding: 0 10px;
+    color: var(--vintage-brown);
+}
+
+.form-control {
+    background-color: var(--vintage-cream) !important;
+    border: 2px solid var(--vintage-brown) !important;
+    color: var(--vintage-dark) !important;
+    font-family: 'Libre Baskerville', serif !important;
+}
+
+.form-control:focus {
+    border-color: var(--vintage-brown) !important;
+    box-shadow: 0 0 10px rgba(139, 69, 19, 0.3) !important;
+}
+
+.footer {
+    background-color: var(--vintage-dark) !important;
+    border-top: 3px solid var(--vintage-brown) !important;
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            var(--vintage-brown),
+            var(--vintage-brown) 10px,
+            var(--vintage-cream) 10px,
+            var(--vintage-cream) 20px
+        );
+}
+
+/* Vintage dekoratif elementler */
+.vintage-border {
+    border: 2px solid var(--vintage-brown);
+    padding: 20px;
+    position: relative;
+}
+
+.vintage-border::before,
+.vintage-border::after {
+    content: '❦';
+    position: absolute;
+    color: var(--vintage-brown);
+    font-size: 24px;
+}
+
+.vintage-border::before {
+    top: -12px;
+    left: 20px;
+}
+
+.vintage-border::after {
+    bottom: -12px;
+    right: 20px;
+}
+
+/* Kağıt dokusu efekti */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(44, 24, 16, 0.03) 2px,
+            rgba(44, 24, 16, 0.03) 4px
+        );
+    z-index: -1;
+    pointer-events: none;
+}
+</style>

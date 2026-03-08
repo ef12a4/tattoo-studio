@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Ayarlar - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}Stüdyo Ayarları{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Genel Ayarlar</h6>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="studio_name" class="form-label">Stüdyo Adı</label>
+                        <input type="text" class="form-control" id="studio_name" name="studio_name" 
+                               value="{{ settings['studio_name'].value if settings['studio_name'] else 'Dövmeci Stüdyosu' }}">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ settings['email'].value if settings['email'] else '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   value="{{ settings['phone'].value if settings['phone'] else '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Adres</label>
+                        <textarea class="form-control" id="address" name="address" rows="3">{{ settings['address'].value if settings['address'] else '' }}</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="working_hours" class="form-label">Çalışma Saatleri</label>
+                            <input type="text" class="form-control" id="working_hours" name="working_hours" 
+                                   value="{{ settings['working_hours'].value if settings['working_hours'] else '09:00 - 18:00' }}"
+                                   placeholder="Örn: 09:00 - 18:00">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="working_days" class="form-label">Çalışma Günleri</label>
+                            <input type="text" class="form-control" id="working_days" name="working_days" 
+                                   value="{{ settings['working_days'].value if settings['working_days'] else 'Pazartesi - Cumartesi' }}"
+                                   placeholder="Örn: Pazartesi - Cumartesi">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Randevu Ayarları</h6>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="appointment_duration" class="form-label">Varsayılan Randevu Süresi (Dakika)</label>
+                            <input type="number" class="form-control" id="appointment_duration" name="appointment_duration" 
+                                   value="{{ settings['appointment_duration'].value if settings['appointment_duration'] else '120' }}" min="30" step="30">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="deposit_percentage" class="form-label">Kapora Oranı (%)</label>
+                            <input type="number" class="form-control" id="deposit_percentage" name="deposit_percentage" 
+                                   value="{{ settings['deposit_percentage'].value if settings['deposit_percentage'] else '20' }}" min="0" max="100">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="auto_reminders" name="auto_reminders" 
+                                   {{ 'checked' if settings['auto_reminders'] and settings['auto_reminders'].value == 'true' else '' }}>
+                            <label class="form-check-label" for="auto_reminders">
+                                Otomatik Randevu Hatırlatmaları
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Kaydet
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Sistem Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Version:</strong> 1.0.0</p>
+                <p><strong>Veritabanı:</strong> SQLite</p>
+                <p><strong>Framework:</strong> Flask</p>
+                <hr>
+                <div class="d-grid">
+                    <button class="btn btn-outline-primary mb-2">
+                        <i class="bi bi-download"></i> Veritabanı Yedekle
+                    </button>
+                    <button class="btn btn-outline-info mb-2">
+                        <i class="bi bi-arrow-repeat"></i> Sistem Bakımı
+                    </button>
+                    <button class="btn btn-outline-secondary">
+                        <i class="bi bi-gear"></i> Gelişmiş Ayarlar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Hızlı İstatistikler</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Toplam Sanatçı:</strong> <span class="badge bg-primary">{{ total_artists }}</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Toplam Müşteri:</strong> <span class="badge bg-success">{{ total_customers }}</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Toplam Randevu:</strong> <span class="badge bg-info">{{ total_appointments }}</span>
+                </div>
+                <div class="mb-2">
+                    <strong>Portfolyo:</strong> <span class="badge bg-warning">{{ portfolio_count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

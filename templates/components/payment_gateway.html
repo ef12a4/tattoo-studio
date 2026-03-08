@@ -1,0 +1,408 @@
+<!-- Responsive Payment Gateway - Codehalweb inspired -->
+<style>
+.payment-gateway-component {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d3436 100%);
+    border-radius: 20px;
+    margin: 40px 0;
+}
+
+.payment-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 25px;
+}
+
+.payment-form {
+    width: 100%;
+    max-width: 700px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.payment-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.payment-column {
+    flex: 1 1 250px;
+}
+
+.payment-title {
+    font-size: 20px;
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    font-weight: 700;
+    position: relative;
+}
+
+.payment-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: var(--secondary-color);
+    border-radius: 1px;
+}
+
+.payment-input-box {
+    margin: 15px 0;
+    position: relative;
+}
+
+.payment-input-box span {
+    display: block;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.payment-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.payment-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.3rem rgba(255, 107, 53, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
+}
+
+.payment-flex {
+    display: flex;
+    gap: 15px;
+}
+
+.payment-flex .payment-input-box {
+    margin-top: 5px;
+}
+
+.card-images {
+    height: 40px;
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3));
+}
+
+.card-image {
+    width: 60px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card-image:hover {
+    border-color: var(--secondary-color);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+}
+
+.card-image.active {
+    border-color: var(--secondary-color);
+    background: rgba(255, 107, 53, 0.1);
+}
+
+.payment-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--gradient-2);
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    font-size: 17px;
+    color: #fff;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    font-weight: 600;
+}
+
+.payment-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s;
+}
+
+.payment-btn:hover {
+    background: var(--gradient-3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+}
+
+.payment-btn:hover::before {
+    left: 100%;
+}
+
+.payment-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Security badges */
+.security-badges {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.security-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+
+.security-badge i {
+    color: var(--secondary-color);
+    font-size: 16px;
+}
+
+/* Order summary */
+.order-summary {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-row.total {
+    font-weight: 700;
+    color: var(--secondary-color);
+    font-size: 18px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .payment-form {
+        padding: 30px 20px;
+    }
+    
+    .payment-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .payment-column {
+        flex: 1 1 100%;
+    }
+    
+    .payment-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .card-images {
+        justify-content: center;
+    }
+}
+</style>
+
+<div class="payment-gateway-component">
+    <div class="payment-container">
+        <form class="payment-form" id="paymentForm">
+            <div class="payment-row">
+                <!-- Billing Address Column -->
+                <div class="payment-column">
+                    <h3 class="payment-title">Fatura Adresi</h3>
+                    <div class="payment-input-box">
+                        <span>Ad Soyad :</span>
+                        <input type="text" class="payment-input" placeholder="Ahmet Yılmaz" required>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>E-posta :</span>
+                        <input type="email" class="payment-input" placeholder="ahmet@example.com" required>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>Adres :</span>
+                        <input type="text" class="payment-input" placeholder="Mahalle - Sokak - İlçe" required>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>Şehir :</span>
+                        <input type="text" class="payment-input" placeholder="İstanbul" required>
+                    </div>
+                    <div class="payment-flex">
+                        <div class="payment-input-box">
+                            <span>Eyalet :</span>
+                            <input type="text" class="payment-input" placeholder="Türkiye" required>
+                        </div>
+                        <div class="payment-input-box">
+                            <span>Posta Kodu :</span>
+                            <input type="number" class="payment-input" placeholder="34000" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Column -->
+                <div class="payment-column">
+                    <h3 class="payment-title">Ödeme Bilgileri</h3>
+                    <div class="payment-input-box">
+                        <span>Kabul Edilen Kartlar :</span>
+                        <div class="card-images">
+                            <div class="card-image active">
+                                <i class='bx bxl-visa'></i>
+                            </div>
+                            <div class="card-image">
+                                <i class='bx bxl-mastercard'></i>
+                            </div>
+                            <div class="card-image">
+                                <i class='bx bxl-amex'></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>Kart Üzerindeki İsim :</span>
+                        <input type="text" class="payment-input" placeholder="AHMET YILMAZ" required>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>Kredi Kartı Numarası :</span>
+                        <input type="text" class="payment-input" placeholder="1111 2222 3333 4444" maxlength="19" required>
+                    </div>
+                    <div class="payment-flex">
+                        <div class="payment-input-box">
+                            <span>Son Kullanma Ay :</span>
+                            <input type="text" class="payment-input" placeholder="Ağustos" required>
+                        </div>
+                        <div class="payment-input-box">
+                            <span>Son Kullanma Yılı :</span>
+                            <input type="number" class="payment-input" placeholder="2025" required>
+                        </div>
+                    </div>
+                    <div class="payment-input-box">
+                        <span>CVV :</span>
+                        <input type="number" class="payment-input" placeholder="123" maxlength="4" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <div class="summary-row">
+                    <span>Stüdyo Planı</span>
+                    <span>Professional - ₺299/ay</span>
+                </div>
+                <div class="summary-row">
+                    <span>Website Builder</span>
+                    <span>₺99/ay</span>
+                </div>
+                <div class="summary-row">
+                    <span>Portfolyo+</span>
+                    <span>₺49/ay</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Toplam</span>
+                    <span>₺447/ay</span>
+                </div>
+            </div>
+            
+            <!-- Security Badges -->
+            <div class="security-badges">
+                <div class="security-badge">
+                    <i class='bx bx-lock'></i>
+                    <span>Güvenli ödeme</span>
+                </div>
+                <div class="security-badge">
+                    <i class='bx bx-shield-check'></i>
+                    <span>SSL korumalı</span>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="payment-btn">
+                <i class='bx bx-credit-card' style='margin-right: 8px;'></i>
+                Ödemeyi Tamamla
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Simulate payment processing
+    const btn = e.target.querySelector('.payment-btn');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="bx bx-loader-alt" style="margin-right: 8px;"></i>İşleniyor...';
+    btn.disabled = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+        btn.innerHTML = '<i class="bx bx-check" style="margin-right: 8px;"></i>Ödeme Başarılı!';
+        btn.style.background = 'var(--gradient-3)';
+        
+        setTimeout(() => {
+            alert('Ödeme başarıyla tamamlandı! Stüdyo planınız aktif edildi.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            btn.style.background = '';
+        }, 2000);
+    }, 2000);
+});
+
+// Card selection
+document.querySelectorAll('.card-image').forEach(card => {
+    card.addEventListener('click', function() {
+        document.querySelectorAll('.card-image').forEach(c => c.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// Format card number input
+document.querySelector('input[placeholder*="Kredi Kartı"]').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\s/g, '');
+    let formattedValue = '';
+    
+    for (let i = 0; i < value.length; i++) {
+        if (i > 0 && i % 4 == 0) {
+            formattedValue += ' ';
+        }
+        formattedValue += value[i];
+    }
+    
+    e.target.value = formattedValue;
+});
+</script>

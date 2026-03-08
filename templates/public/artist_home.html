@@ -1,0 +1,293 @@
+{% extends "public/base_public.html" %}
+
+{% block title %}{{ artist.name }} - {{ website.bio_title or 'Profesyonel Dövme Sanatçısı' }}{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section id="home" class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">{{ website.bio_title or artist.name }}</h1>
+                <p class="lead mb-4">{{ website.about_text or artist.bio or (artist.name + ' - ' + (artist.specialty or 'Profesyonel dövme sanatçısı')) }}</p>
+                <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                    <a href="#portfolio" class="btn btn-light btn-lg">Portfolyo</a>
+                    <a href="#contact" class="btn btn-outline-light btn-lg">Randevu Al</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                {% if artist.portfolio_url %}
+                <img src="{{ artist.portfolio_url }}" alt="{{ artist.name }}" class="img-fluid rounded-circle shadow-lg" style="max-width: 400px;">
+                {% else %}
+                <div class="text-center">
+                    <i class="bi bi-person-circle" style="font-size: 12rem;"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">Hakkımda</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <p class="lead">{{ website.about_text or artist.bio or (artist.name + ' profesyonel dövme sanatçısıyım. ' + (artist.specialty or 'Özel dövme tasarımları') + ' konusunda uzmanlaştım.') }}</p>
+                
+                {% if artist.experience_years %}
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="fw-bold">{{ artist.experience_years }}+</h3>
+                            <p>Yıllık Deneyim</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="fw-bold">{{ designs|length }}+</h3>
+                            <p>Tamamlanan İş</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="fw-bold">{{ artist.specialty or 'Custom' }}</h3>
+                            <p>Uzmanlık Alanı</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">İletişim Bilgileri</h5>
+                        {% if website.contact_email %}
+                        <p><i class="bi bi-envelope"></i> {{ website.contact_email }}</p>
+                        {% endif %}
+                        {% if website.contact_phone %}
+                        <p><i class="bi bi-phone"></i> {{ website.contact_phone }}</p>
+                        {% endif %}
+                        {% if artist.instagram %}
+                        <p><i class="bi bi-instagram"></i> @{{ artist.instagram }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Section -->
+<section id="portfolio" class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">Portfolyo</h2>
+            </div>
+        </div>
+        
+        {% if designs %}
+        <div class="row">
+            {% for design in designs %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card portfolio-item shadow">
+                    {% if design.image_url %}
+                    <img src="{{ design.image_url }}" class="card-img-top" alt="{{ design.title }}">
+                    {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 300px;">
+                        <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ design.title }}</h5>
+                        <p class="card-text">{{ design.description[:100] + '...' if design.description|length > 100 else design.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">{{ design.category or design.style or 'Custom' }}</small>
+                            {% if design.estimated_price %}
+                            <span class="badge bg-primary">₺{{ "%.0f"|format(design.estimated_price) }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-images text-muted" style="font-size: 4rem;"></i>
+            <h4 class="mt-3">Yakında Portfolyo Eklenecek</h4>
+            <p class="text-muted">En iyi çalışmalarımı burada paylaşacağım.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">Hizmetler</h2>
+            </div>
+        </div>
+        
+        {% if services %}
+        <div class="row">
+            {% for service in services %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card h-100">
+                    <h5 class="fw-bold">{{ service.title }}</h5>
+                    <p class="text-muted">{{ service.description }}</p>
+                    <div class="mt-auto">
+                        {% if service.min_price and service.max_price %}
+                        <p class="fw-bold">₺{{ "%.0f"|format(service.min_price) }} - ₺{{ "%.0f"|format(service.max_price) }}</p>
+                        {% elif service.min_price %}
+                        <p class="fw-bold">Başlangıç ₺{{ "%.0f"|format(service.min_price) }}</p>
+                        {% endif %}
+                        {% if service.duration_minutes %}
+                        <small class="text-muted"><i class="bi bi-clock"></i> {{ service.duration_minutes }} dakika</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card h-100">
+                    <h5 class="fw-bold">Custom Dövme</h5>
+                    <p class="text-muted">Size özel tasarlanmış özgün dövmeler</p>
+                    <p class="fw-bold">Fiyat: Projeye göre belirlenir</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card h-100">
+                    <h5 class="fw-bold">Cover-Up</h5>
+                    <p class="text-muted">Eski dövmelerin kapatılması ve yeniden tasarlanması</p>
+                    <p class="fw-bold">Fiyat: Projeye göre belirlenir</p>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="service-card h-100">
+                    <h5 class="fw-bold">Touch-Up</h5>
+                    <p class="text-muted">Mevcut dövmelerin tazelemesi ve bakımı</p>
+                    <p class="fw-bold">Başlangıç: ₺500</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">İletişim & Randevu</h2>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="contact-form">
+                    <h4 class="mb-4">Randevu Formu</h4>
+                    <form method="POST" action="{{ url_for('public_appointment', subdomain=website.subdomain) }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Adınız Soyadınız *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">E-posta *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Telefon</label>
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="preferred_date" class="form-label">İstediğiniz Tarih</label>
+                                <input type="date" class="form-control" id="preferred_date" name="preferred_date">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="size" class="form-label">Dövme Büyüklüğü</label>
+                                <select class="form-control" id="size" name="size">
+                                    <option value="">Seçin</option>
+                                    <option value="Küçük (5x5 cm)">Küçük (5x5 cm)</option>
+                                    <option value="Orta (10x10 cm)">Orta (10x10 cm)</option>
+                                    <option value="Büyük (15x15 cm)">Büyük (15x15 cm)</option>
+                                    <option value="Çok Büyük (20+ cm)">Çok Büyük (20+ cm)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="placement" class="form-label">Vücut Bölgesi</label>
+                                <input type="text" class="form-control" id="placement" name="placement" placeholder="Örn: Kol, Sırt, Bacak">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="budget" class="form-label">Bütçe (₺)</label>
+                                <input type="number" class="form-control" id="budget" name="budget" min="0">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="design_description" class="form-label">Dövme Açıklaması *</label>
+                            <textarea class="form-control" id="design_description" name="design_description" rows="4" required placeholder="İstediğiniz dövme hakkında detaylı bilgi verin..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-send"></i> Randevu Talebi Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">İletişim Bilgileri</h5>
+                        {% if website.contact_email %}
+                        <p><i class="bi bi-envelope"></i> {{ website.contact_email }}</p>
+                        {% endif %}
+                        {% if website.contact_phone %}
+                        <p><i class="bi bi-phone"></i> {{ website.contact_phone }}</p>
+                        {% endif %}
+                        {% if artist.instagram %}
+                        <p><i class="bi bi-instagram"></i> <a href="https://instagram.com/{{ artist.instagram }}" target="_blank">@{{ artist.instagram }}</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">Bilgi</h5>
+                        <p class="small text-muted">
+                            Randevu talepleriniz en kısa sürede değerlendirilecektir. 
+                            Lütfen detaylı bilgi vererek süreci hızlandırın.
+                        </p>
+                        <p class="small text-muted">
+                            <strong>Not:</strong> Randevu için kapora gerekebilir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

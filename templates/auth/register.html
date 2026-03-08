@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tattoo Studio Platform - Kayıt Ol</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #ff6b35;
+            --accent-color: #4ecdc4;
+            --text-light: #6c757d;
+            --border-light: #e9ecef;
+            --bg-light: #f8f9fa;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            --gradient-3: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gradient-1);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background animation */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            z-index: -1;
+            animation: grain 20s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -10%); }
+            20% { transform: translate(-15%, 5%); }
+            30% { transform: translate(7%, -25%); }
+            40% { transform: translate(-5%, 25%); }
+            50% { transform: translate(-15%, 10%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 15%); }
+            80% { transform: translate(3%, 35%); }
+            90% { transform: translate(-10%, 10%); }
+        }
+
+        /* Floating shapes */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 25s;
+        }
+
+        .shape:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            right: 10%;
+            animation-delay: 5s;
+            animation-duration: 30s;
+        }
+
+        .shape:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 10s;
+            animation-duration: 20s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(30px) rotate(240deg); }
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 10px 30px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            overflow: hidden;
+            max-width: 1200px;
+            width: 100%;
+            min-height: 650px;
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 107, 53, 0.1) 0%, 
+                rgba(78, 205, 196, 0.1) 100%);
+            border-radius: 24px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .left-panel {
+            flex: 1;
+            min-width: 400px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #2d3436 100%);
+            color: white;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, -30px) rotate(180deg); }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo i {
+            color: var(--secondary-color);
+            font-size: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .left-panel h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .features {
+            list-style: none;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            opacity: 0;
+            animation: fadeInLeft 0.6s ease forwards;
+        }
+
+        .features li:nth-child(1) { animation-delay: 0.1s; }
+        .features li:nth-child(2) { animation-delay: 0.2s; }
+        .features li:nth-child(3) { animation-delay: 0.3s; }
+        .features li:nth-child(4) { animation-delay: 0.4s; }
+        .features li:nth-child(5) { animation-delay: 0.5s; }
+        .features li:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .features i {
+            color: var(--accent-color);
+            margin-right: 15px;
+            font-size: 1.2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .features li:nth-child(odd) i {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .right-panel {
+            flex: 1;
+            min-width: 400px;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInDown 0.8s ease 0.3s forwards;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .register-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .account-type-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.4s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .account-type {
+            flex: 1;
+            padding: 25px 20px;
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .account-type::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .account-type:hover::before {
+            left: 100%;
+        }
+
+        .account-type:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .account-type.active {
+            border-color: var(--secondary-color);
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05));
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .account-type.active::after {
+            content: '✓';
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px;
+            height: 28px;
+            background: var(--gradient-2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .account-type i {
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .account-type:hover i {
+            transform: scale(1.1);
+        }
+
+        .account-type h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .account-type p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+
+        .account-type:hover p {
+            color: var(--primary-color);
+        }
+
+        .form-floating {
+            margin-bottom: 25px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .form-floating:nth-child(1) { animation-delay: 0.5s; }
+        .form-floating:nth-child(2) { animation-delay: 0.6s; }
+        .form-floating:nth-child(3) { animation-delay: 0.7s; }
+        .form-floating:nth-child(4) { animation-delay: 0.8s; }
+        .form-floating:nth-child(5) { animation-delay: 0.9s; }
+        .form-floating:nth-child(6) { animation-delay: 1.0s; }
+
+        .form-control {
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            padding: 18px 15px;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: auto;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.3rem rgba(255, 107, 53, 0.25);
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+        }
+
+        /* Animated Floating Labels - Codehalweb inspired */
+        .form-floating {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-floating label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: var(--text-light);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0 5px;
+            border-radius: 4px;
+        }
+
+        .form-floating input:focus ~ label,
+        .form-floating input:valid ~ label {
+            top: 0;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%);
+            font-weight: 600;
+        }
+
+        .form-floating input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.3rem rgba(255, 107, 53, 0.25);
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.02);
+        }
+
+        /* Button Border Animation - Codehalweb inspired */
+        .btn-register {
+            background: var(--gradient-2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 18px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            width: 100%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.2s forwards;
+        }
+
+        .btn-register::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+        .btn-register:hover::before {
+            left: 100%;
+        }
+
+        /* Animated Border Effects */
+        .btn-register::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-register:hover::after {
+            border-color: rgba(255, 255, 255, 0.5);
+            animation: borderGlow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { box-shadow: 0 0 5px rgba(255, 107, 53, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.8); }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 35px 0;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.3s forwards;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--border-light), transparent);
+        }
+
+        .divider span {
+            padding: 0 20px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.4s forwards;
+        }
+
+        .social-btn {
+            padding: 15px;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+            transition: left 0.6s;
+        }
+
+        .social-btn:hover::before {
+            left: 100%;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-btn.google:hover {
+            border-color: #ea4335;
+            color: #ea4335;
+            background: rgba(234, 67, 53, 0.1);
+        }
+
+        .social-btn.facebook:hover {
+            border-color: #1877f2;
+            color: #1877f2;
+            background: rgba(24, 119, 242, 0.1);
+        }
+
+        .social-btn.apple:hover {
+            border-color: #000;
+            color: #000;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn.github:hover {
+            border-color: #333;
+            color: #333;
+            background: rgba(51, 51, 51, 0.1);
+        }
+
+        .social-btn.twitter:hover {
+            border-color: #1da1f2;
+            color: #1da1f2;
+            background: rgba(29, 161, 242, 0.1);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease 1.5s forwards;
+        }
+
+        .login-link p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .login-link a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            transform: scale(1.05);
+        }
+
+        .studio-fields {
+            display: none;
+            animation: slideDown 0.4s ease;
+        }
+
+        .studio-fields.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar styling */
+        .right-panel::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .right-panel::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .right-panel::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        .right-panel::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .register-container {
+                flex-direction: column;
+                max-width: 100%;
+                min-height: auto;
+                border-radius: 16px;
+            }
+
+            .left-panel,
+            .right-panel {
+                min-width: 100%;
+                padding: 40px 30px;
+            }
+
+            .left-panel {
+                order: 2;
+                min-height: 300px;
+            }
+
+            .right-panel {
+                order: 1;
+                max-height: none;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-shapes {
+                display: none;
+            }
+        }
+
+        /* Prevent scroll bounce */
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        @media (min-height: 800px) {
+            .register-container {
+                max-height: 80vh;
+                margin: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Firebase Authentication -->
+    {% include 'auth/firebase_auth.html' %}
+
+    <!-- Floating shapes background -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="register-container">
+        <!-- Sol Panel -->
+        <div class="left-panel">
+            <div class="logo">
+                <i class="bi bi-palette"></i>
+                <span>Tattoo Studio</span>
+            </div>
+            <h1>Dövmeci Stüdyosu Platformuna Hoş Geldiniz</h1>
+            <p>Profesyonel dövmeci stüdyosu yönetimi için en kapsamlı platform. Saniyeler içinde kayıt olun ve dijital dünyaya adım atın.</p>
+            
+            <ul class="features">
+                <li><i class="bi bi-check-circle-fill"></i> Profesyonel website builder</li>
+                <li><i class="bi bi-check-circle-fill"></i> Online randevu sistemi</li>
+                <li><i class="bi bi-check-circle-fill"></i> E-ticaret entegrasyonu</li>
+                <li><i class="bi bi-check-circle-fill"></i> Advanced analytics</li>
+                <li><i class="bi bi-check-circle-fill"></i> Multi-language support</li>
+                <li><i class="bi bi-check-circle-fill"></i> Mobil uygulama desteği</li>
+            </ul>
+
+            <div class="testimonial">
+                <div style="font-style: italic; margin-bottom: 10px;">
+                    "Bu platform sayesinde stüdyomuzu dijital dünyaya taşıdık. İşlerimiz %300 arttı!"
+                </div>
+                <div style="font-weight: 600;">- Ali Demir, Master Tattoo Artist</div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel -->
+        <div class="right-panel">
+            <div class="register-header">
+                <h2>Hesap Oluştur</h2>
+                <p>30 saniyede kayıt olun ve hemen başlayın</p>
+            </div>
+
+            <!-- Adım Göstergesi -->
+            <div class="step-indicator">
+                <div class="step active">1</div>
+                <div class="step">2</div>
+                <div class="step">3</div>
+            </div>
+
+            <!-- Hesap Tipi Seçimi -->
+            <div class="account-type-selector">
+                <div class="account-type active" data-type="artist">
+                    <i class="bi bi-palette2"></i>
+                    <h4>Sanatçı</h4>
+                    <p>Bireysel sanatçı hesabı</p>
+                </div>
+                <div class="account-type" data-type="studio">
+                    <i class="bi bi-shop"></i>
+                    <h4>Stüdyo</h4>
+                    <p>Stüdyo sahibi hesabı</p>
+                </div>
+                <div class="account-type" data-type="customer">
+                    <i class="bi bi-person"></i>
+                    <h4>Müşteri</h4>
+                    <p>Randevu almak için</p>
+                </div>
+            </div>
+
+            <form id="registerForm">
+                <!-- Temel Bilgiler -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="firstName" placeholder="Ad" required>
+                            <label for="firstName">Ad</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="lastName" placeholder="Soyad" required>
+                            <label for="lastName">Soyad</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating">
+                    <input type="email" class="form-control" id="email" placeholder="E-posta" required>
+                    <label for="email">E-posta adresi</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="tel" class="form-control" id="phone" placeholder="Telefon" required>
+                    <label for="phone">Telefon numarası</label>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="password" placeholder="Şifre" required>
+                    <label for="password">Şifre</label>
+                    <div class="password-strength" id="passwordStrength"></div>
+                </div>
+
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="confirmPassword" placeholder="Şifre Tekrar" required>
+                    <label for="confirmPassword">Şifreyi tekrar girin</label>
+                </div>
+
+                <!-- Stüdyo Alanları (Gizli) -->
+                <div class="studio-fields" id="studioFields">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="studioName" placeholder="Stüdyo Adı">
+                        <label for="studioName">Stüdyo adı</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="studioAddress" placeholder="Adres">
+                        <label for="studioAddress">Stüdyo adresi</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="url" class="form-control" id="studioWebsite" placeholder="Mevcut Website">
+                        <label for="studioWebsite">Mevcut web sitesi (varsa)</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <select class="form-control" id="studioSize">
+                            <option value="">Stüdyo büyüklüğü</option>
+                            <option value="small">Küçük (1-3 sanatçı)</option>
+                            <option value="medium">Orta (4-8 sanatçı)</option>
+                            <option value="large">Büyük (8+ sanatçı)</option>
+                        </select>
+                        <label for="studioSize">Stüdyo büyüklüğü</label>
+                    </div>
+                </div>
+
+                <!-- Sanatçı Alanları (Gizli) -->
+                <div class="studio-fields" id="artistFields">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="artistName" placeholder="Sanatçı Adı">
+                        <label for="artistName">Sanatçı adı/brand</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <select class="form-control" id="specialty">
+                            <option value="">Uzmanlık alanı</option>
+                            <option value="traditional">Traditional</option>
+                            <option value="realism">Realism</option>
+                            <option value="watercolor">Watercolor</option>
+                            <option value="geometric">Geometric</option>
+                            <option value="japanese">Japanese</option>
+                            <option value="tribal">Tribal</option>
+                            <option value="lettering">Lettering</option>
+                            <option value="blackwork">Blackwork</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                        <label for="specialty">Uzmanlık alanı</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="experience" placeholder="Deneyim">
+                        <label for="experience">Deneyim (yıl)</label>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="url" class="form-control" id="portfolio" placeholder="Portfolyo">
+                        <label for="portfolio">Portfolyo/Instagram linki</label>
+                    </div>
+                </div>
+
+                <!-- Şartlar -->
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        <a href="#" target="_blank">Kullanım Şartları</a> ve <a href="#" target="_blank">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum.
+                    </label>
+                </div>
+
+                <!-- Kayıt Butonu -->
+                <button type="submit" class="btn btn-register">
+                    <span class="loading-spinner" id="loadingSpinner"></span>
+                    <span id="btnText">Hesap Oluştur</span>
+                </button>
+            </form>
+
+            <!-- Sosyal Medya Girişi -->
+            <div class="divider">
+                <span>veya şununla kayıt ol</span>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn google" onclick="socialLogin('google')">
+                    <i class="bi bi-google"></i> Google
+                </button>
+                <button type="button" class="social-btn facebook" onclick="socialLogin('facebook')">
+                    <i class="bi bi-facebook"></i> Facebook
+                </button>
+                <button type="button" class="social-btn apple" onclick="socialLogin('apple')">
+                    <i class="bi bi-apple"></i> Apple
+                </button>
+                <button type="button" class="social-btn github" onclick="socialLogin('github')">
+                    <i class="bi bi-github"></i> GitHub
+                </button>
+                <button type="button" class="social-btn twitter" onclick="socialLogin('twitter')">
+                    <i class="bi bi-twitter"></i> Twitter
+                </button>
+            </div>
+
+            <!-- Giriş Linki -->
+            <div class="login-link">
+                <p>Zaten hesabınız var mı? <a href="/login">Giriş yapın</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Hesap tipi seçimi
+        const accountTypes = document.querySelectorAll('.account-type');
+        const studioFields = document.getElementById('studioFields');
+        const artistFields = document.getElementById('artistFields');
+
+        accountTypes.forEach(type => {
+            type.addEventListener('click', function() {
+                // Aktif sınıfını değiştir
+                accountTypes.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Alanları göster/gizle
+                const selectedType = this.dataset.type;
+                
+                studioFields.classList.remove('show');
+                artistFields.classList.remove('show');
+
+                if (selectedType === 'studio') {
+                    studioFields.classList.add('show');
+                } else if (selectedType === 'artist') {
+                    artistFields.classList.add('show');
+                }
+            });
+        });
+
+        // Şifre gücü kontrolü
+        const passwordInput = document.getElementById('password');
+        const passwordStrength = document.getElementById('passwordStrength');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            passwordStrength.className = 'password-strength';
+            
+            if (strength <= 2) {
+                passwordStrength.classList.add('weak');
+            } else if (strength <= 4) {
+                passwordStrength.classList.add('medium');
+            } else {
+                passwordStrength.classList.add('strong');
+            }
+        });
+
+        // Sosyal medya girişi
+        async function socialLogin(provider) {
+            try {
+                const result = await firebaseAuth[`signInWith${provider.charAt(0).toUpperCase() + provider.slice(1)}`]();
+                
+                if (result.success) {
+                    // Başarılı giriş - yönlendirme backend tarafından yapılacak
+                    console.log('Giriş başarılı:', result);
+                } else {
+                    console.error('Giriş hatası:', result.message);
+                }
+            } catch (error) {
+                console.error('Sosyal medya girişi hatası:', error);
+            }
+        }
+
+        // Form gönderimi
+        const registerForm = document.getElementById('registerForm');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const btnText = document.getElementById('btnText');
+
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Loading göster
+            loadingSpinner.style.display = 'inline-block';
+            btnText.textContent = 'Kaydediliyor...';
+
+            // Şifre kontrolü
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                firebaseAuth.showError('Şifreler eşleşmiyor!');
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'Hesap Oluştur';
+                return;
+            }
+
+            // Şartlar kontrolü
+            const terms = document.getElementById('terms').checked;
+            if (!terms) {
+                firebaseAuth.showError('Kullanım şartlarını kabul etmelisiniz!');
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'Hesap Oluştur';
+                return;
+            }
+
+            // Form verilerini topla
+            const accountType = document.querySelector('.account-type.active').dataset.type;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            const data = {
+                accountType: accountType,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                password: password
+            };
+
+            // Hesap tipine göre ek alanları ekle
+            if (accountType === 'studio') {
+                data.studioName = document.getElementById('studioName').value;
+                data.studioAddress = document.getElementById('studioAddress').value;
+                data.studioWebsite = document.getElementById('studioWebsite').value;
+                data.studioSize = document.getElementById('studioSize').value;
+            } else if (accountType === 'artist') {
+                data.artistName = document.getElementById('artistName').value;
+                data.specialty = document.getElementById('specialty').value;
+                data.experience = document.getElementById('experience').value;
+                data.portfolio = document.getElementById('portfolio').value;
+            }
+
+            try {
+                // Firebase ile kayıt
+                const result = await firebaseAuth.signUpWithEmail(email, password, `${firstName} ${lastName}`);
+                
+                if (result.success) {
+                    // Backend'e form verilerini gönder
+                    const response = await fetch('/api/v1/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const backendResult = await response.json();
+                    
+                    if (backendResult.success) {
+                        firebaseAuth.showSuccess('Kayıt başarılı! Yönlendiriliyorsunuz...');
+                        window.location.href = backendResult.redirect || '/onboarding';
+                    } else {
+                        firebaseAuth.showError(backendResult.message);
+                    }
+                } else {
+                    firebaseAuth.showError(result.message);
+                }
+            } catch (error) {
+                console.error('Kayıt hatası:', error);
+                firebaseAuth.showError('Kayıt sırasında hata oluştu!');
+            } finally {
+                // Loading gizle
+                loadingSpinner.style.display = 'none';
+                btnText.textContent = 'Hesap Oluştur';
+            }
+        });
+    </script>
+</body>
+</html>

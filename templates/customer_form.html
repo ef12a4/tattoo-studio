@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Müşteri Düzenle" if customer else "Yeni Müşteri" }} - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}{{ "Müşteri Düzenle" if customer else "Yeni Müşteri Ekle" }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Ad Soyad *</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ customer.name if customer else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">E-posta *</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ customer.email if customer else '' }}" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Telefon</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ customer.phone if customer else '' }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="date_of_birth" class="form-label">Doğum Tarihi</label>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" 
+                                   value="{{ customer.date_of_birth.strftime('%Y-%m-%d') if customer and customer.date_of_birth else '' }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notlar</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="4" 
+                                  placeholder="Müşteri hakkında özel notlar, alerjiler, tercihler vb...">{{ customer.notes if customer else '' }}</textarea>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> {{ "Güncelle" if customer else "Kaydet" }}
+                        </button>
+                        <a href="{{ url_for('customers') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if customer %}
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Müşteri Bilgileri</h6>
+            </div>
+            <div class="card-body">
+                <p><strong>Kayıt Tarihi:</strong> {{ customer.created_at.strftime('%d.%m.%Y') }}</p>
+                {% if customer.appointments %}
+                <p><strong>Toplam Randevu:</strong> {{ customer.appointments|length }}</p>
+                <p><strong>Son Randevu:</strong> 
+                    {% set last_appointment = customer.appointments|sort(attribute='date_time')|last %}
+                    {{ last_appointment.date_time.strftime('%d.%m.%Y') if last_appointment else '-' }}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

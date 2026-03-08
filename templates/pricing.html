@@ -1,0 +1,576 @@
+{% extends "base.html" %}
+
+{% block title %}Özellikler ve Paketler{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-white mb-3">Premium Özellikler</h1>
+                <p class="lead text-light opacity-75">İhtiyacınıza uygun paketi seçin, stüdyonuzu geliştirin</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toggle Button -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <div class="d-inline-flex align-items-center bg-dark rounded-pill p-2">
+                <span class="text-white me-3">Aylık</span>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="billingToggle">
+                    <label class="form-check-label" for="billingToggle"></label>
+                </div>
+                <span class="text-white ms-3">Yıllık <span class="badge bg-success ms-1">%20 İndirim</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Cards -->
+    <div class="row g-4 align-items-center">
+        <!-- Free Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card free">
+                <div class="pricing-header">
+                    <h3 class="pricing-title">Başlangıç</h3>
+                    <div class="pricing-price">
+                        <span class="currency">₺</span>
+                        <span class="amount monthly">0</span>
+                        <span class="amount yearly" style="display: none;">0</span>
+                        <span class="period">/ay</span>
+                    </div>
+                    <p class="pricing-description">Küçük stüdyolar için ideal</p>
+                </div>
+                
+                <div class="pricing-features">
+                    <ul class="list-unstyled">
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>1 Sanatçı</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>50 Müşteri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Temel Randevu Yönetimi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Basit Portfolyo</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-x-circle text-muted"></i>
+                            <span class="text-muted">Online Randevu</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-x-circle text-muted"></i>
+                            <span class="text-muted">SMS Bildirimleri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-x-circle text-muted"></i>
+                            <span class="text-muted">Ödeme Sistemi</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-action">
+                    <button class="btn btn-outline-light w-100">Mevcut Plan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card professional featured">
+                <div class="pricing-badge">
+                    <span class="badge bg-warning text-dark">En Popüler</span>
+                </div>
+                
+                <div class="pricing-header">
+                    <h3 class="pricing-title">Profesyonel</h3>
+                    <div class="pricing-price">
+                        <span class="currency">₺</span>
+                        <span class="amount monthly">299</span>
+                        <span class="amount yearly" style="display: none;">239</span>
+                        <span class="period">/ay</span>
+                    </div>
+                    <p class="pricing-description">Büyüyen stüdyolar için</p>
+                </div>
+                
+                <div class="pricing-features">
+                    <ul class="list-unstyled">
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>5 Sanatçı</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>500 Müşteri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Gelişmiş Randevu Yönetimi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Profesyonel Portfolyo</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Online Randevu</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>E-posta Bildirimleri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Temel Ödeme Sistemi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Mobil Uygulama</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-x-circle text-muted"></i>
+                            <span class="text-muted">SMS Bildirimleri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-x-circle text-muted"></i>
+                            <span class="text-muted">API Erişimi</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-action">
+                    <button class="btn btn-warning w-100">Yükselt</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enterprise Plan -->
+        <div class="col-lg-4 col-md-6">
+            <div class="pricing-card enterprise">
+                <div class="pricing-header">
+                    <h3 class="pricing-title">Enterprise</h3>
+                    <div class="pricing-price">
+                        <span class="currency">₺</span>
+                        <span class="amount monthly">899</span>
+                        <span class="amount yearly" style="display: none;">719</span>
+                        <span class="period">/ay</span>
+                    </div>
+                    <p class="pricing-description">Büyük stüdyolar ve zincirler</p>
+                </div>
+                
+                <div class="pricing-features">
+                    <ul class="list-unstyled">
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Sınırsız Sanatçı</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Sınırsız Müşteri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Advanced Randevu Yönetimi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Özel Portfolyo Sitesi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Online Randevu</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>SMS & E-posta Bildirimleri</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Gelişmiş Ödeme Sistemi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Özel Mobil Uygulama</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>API Erişimi</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>24/7 Destek</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>Özel Eğitim</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <span>White Label</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="pricing-action">
+                    <button class="btn btn-outline-light w-100">İletişime Geç</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Comparison -->
+    <div class="row mt-5 pt-5">
+        <div class="col-12">
+            <h2 class="text-center text-white mb-4">Detaylı Karşılaştırma</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>Özellik</th>
+                            <th class="text-center">Başlangıç</th>
+                            <th class="text-center">Profesyonel</th>
+                            <th class="text-center">Enterprise</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Sanatçı Sayısı</strong></td>
+                            <td class="text-center">1</td>
+                            <td class="text-center">5</td>
+                            <td class="text-center">Sınırsız</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Müşteri Kapasitesi</strong></td>
+                            <td class="text-center">50</td>
+                            <td class="text-center">500</td>
+                            <td class="text-center">Sınırsız</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Online Randevu</strong></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check text-success"></i></td>
+                            <td class="text-center"><i class="bi bi-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>SMS Bildirimleri</strong></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ödeme Sistemi</strong></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center">Temel</td>
+                            <td class="text-center">Gelişmiş</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mobil Uygulama</strong></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center">Standart</td>
+                            <td class="text-center">Özel</td>
+                        </tr>
+                        <tr>
+                            <td><strong>API Erişimi</strong></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-x text-danger"></i></td>
+                            <td class="text-center"><i class="bi bi-check text-success"></i></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Destek</strong></td>
+                            <td class="text-center">E-posta</td>
+                            <td class="text-center">Telefon & E-posta</td>
+                            <td class="text-center">24/7 Öncelikli</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add-ons Section -->
+    <div class="row mt-5 pt-5">
+        <div class="col-12">
+            <h2 class="text-center text-white mb-4">Ek Özellikler (Add-ons)</h2>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-globe"></i>
+                        </div>
+                        <h4>Çoklu Dil Desteği</h4>
+                        <p>5 farklı dilde site ve uygulama desteği</p>
+                        <div class="addon-price">₺49/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h4>Advanced Analytics</h4>
+                        <p>Detaylı raporlama ve iş zekası</p>
+                        <div class="addon-price">₺79/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h4>AI Otomasyon</h4>
+                        <p>AKILLI randevu önerileri ve otomasyon</p>
+                        <div class="addon-price">₺99/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4>Gelişmiş Güvenlik</h4>
+                        <p>SSL sertifikası ve güvenlik özellikleri</p>
+                        <div class="addon-price">₺29/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-camera-video"></i>
+                        </div>
+                        <h3>Video Konsültasyon</h4>
+                        <p>Online müşteri görüşmeleri</p>
+                        <div class="addon-price">₺69/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="addon-card">
+                        <div class="addon-icon">
+                            <i class="bi bi-palette"></i>
+                        </div>
+                        <h4>Özel Tasarım</h4>
+                        <p>Profesyonel tasarım hizmetleri</p>
+                        <div class="addon-price">₺199/ay</div>
+                        <button class="btn btn-outline-light btn-sm">Ekle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pricing-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    backdrop-filter: blur(10px);
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(255, 107, 53, 0.3);
+    border-color: var(--secondary-color);
+}
+
+.pricing-card.featured {
+    border-color: var(--secondary-color);
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+}
+
+.pricing-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.pricing-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.pricing-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.pricing-price {
+    margin-bottom: 0.5rem;
+}
+
+.currency {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    vertical-align: top;
+}
+
+.amount {
+    font-size: 3rem;
+    font-weight: 700;
+    color: white;
+}
+
+.period {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+}
+
+.pricing-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.pricing-features {
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.feature-item i {
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.pricing-action {
+    margin-top: auto;
+}
+
+.addon-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.addon-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--secondary-color);
+    box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+}
+
+.addon-icon {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.addon-card h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.addon-card p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+}
+
+.addon-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 1rem;
+}
+
+.table-dark {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-dark th,
+.table-dark td {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--secondary-color);
+}
+
+.form-check-input:checked {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .amount {
+        font-size: 2.5rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const billingToggle = document.getElementById('billingToggle');
+    const monthlyPrices = document.querySelectorAll('.amount.monthly');
+    const yearlyPrices = document.querySelectorAll('.amount.yearly');
+    
+    billingToggle.addEventListener('change', function() {
+        if (this.checked) {
+            monthlyPrices.forEach(price => price.style.display = 'none');
+            yearlyPrices.forEach(price => price.style.display = 'inline');
+        } else {
+            monthlyPrices.forEach(price => price.style.display = 'inline');
+            yearlyPrices.forEach(price => price.style.display = 'none');
+        }
+    });
+
+    // Add smooth scroll animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.pricing-card, .addon-card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'all 0.6s ease';
+        observer.observe(card);
+    });
+});
+</script>
+{% endblock %}

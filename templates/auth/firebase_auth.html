@@ -1,0 +1,349 @@
+<!-- Firebase Authentication Integration -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+<script>
+// Firebase initialization - Gerçek proje config
+const firebaseConfig = {
+    apiKey: "AIzaSyDP43wZ9A8bmbvVEd0l-91vkPtxmVj6oBg",
+    authDomain: "tatto-59da5.firebaseapp.com",
+    projectId: "tatto-59da5",
+    storageBucket: "tatto-59da5.firebasestorage.app",
+    messagingSenderId: "948155824063",
+    appId: "1:948155824063:web:803b849eec40316d67530a",
+    measurementId: "G-V44CCWSMQ1"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const analytics = firebase.analytics();
+
+console.log("Firebase initialized with project:", firebaseConfig.projectId);
+
+// Firebase Authentication Manager
+class FirebaseAuthManager {
+    constructor() {
+        this.auth = auth;
+        this.providers = {
+            google: new firebase.auth.GoogleAuthProvider(),
+            facebook: new firebase.auth.FacebookAuthProvider(),
+            apple: new firebase.auth.OAuthProvider('apple.com'),
+            github: new firebase.auth.GithubAuthProvider(),
+            twitter: new firebase.auth.TwitterAuthProvider()
+        };
+    }
+
+    // Google ile giriş
+    async signInWithGoogle() {
+        try {
+            console.log("Google ile giriş başlatılıyor...");
+            const result = await this.auth.signInWithPopup(this.providers.google);
+            const user = result.user;
+            
+            console.log("Google giriş başarılı:", user);
+            
+            // Backend'e gönder
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('Google giriş hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Facebook ile giriş
+    async signInWithFacebook() {
+        try {
+            console.log("Facebook ile giriş başlatılıyor...");
+            const result = await this.auth.signInWithPopup(this.providers.facebook);
+            const user = result.user;
+            
+            console.log("Facebook giriş başarılı:", user);
+            
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('Facebook giriş hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Apple ile giriş
+    async signInWithApple() {
+        try {
+            console.log("Apple ile giriş başlatılıyor...");
+            const result = await this.auth.signInWithPopup(this.providers.apple);
+            const user = result.user;
+            
+            console.log("Apple giriş başarılı:", user);
+            
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('Apple giriş hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // GitHub ile giriş
+    async signInWithGithub() {
+        try {
+            console.log("GitHub ile giriş başlatılıyor...");
+            const result = await this.auth.signInWithPopup(this.providers.github);
+            const user = result.user;
+            
+            console.log("GitHub giriş başarılı:", user);
+            
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('GitHub giriş hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Email/Şifre ile giriş
+    async signInWithEmail(email, password) {
+        try {
+            console.log("Email ile giriş başlatılıyor...");
+            const result = await this.auth.signInWithEmailAndPassword(email, password);
+            const user = result.user;
+            
+            console.log("Email giriş başarılı:", user);
+            
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('Email giriş hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Email/Şifre ile kayıt
+    async signUpWithEmail(email, password, displayName) {
+        try {
+            console.log("Email ile kayıt başlatılıyor...");
+            const result = await this.auth.createUserWithEmailAndPassword(email, password);
+            const user = result.user;
+            
+            // Display name güncelle
+            await user.updateProfile({ displayName });
+            
+            console.log("Email kayıt başarılı:", user);
+            
+            const response = await this.sendTokenToBackend(user);
+            return response;
+        } catch (error) {
+            console.error('Email kayıt hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Şifre sıfırlama
+    async resetPassword(email) {
+        try {
+            await this.auth.sendPasswordResetEmail(email);
+            return { success: true, message: 'Şifre sıfırlama e-postası gönderildi' };
+        } catch (error) {
+            console.error('Şifre sıfırlama hatası:', error);
+            return { success: false, message: error.message };
+        }
+    }
+
+    // Çıkış
+    async signOut() {
+        try {
+            await this.auth.signOut();
+            console.log("Çıkış yapıldı");
+            window.location.href = '/login';
+        } catch (error) {
+            console.error('Çıkış hatası:', error);
+        }
+    }
+
+    // Token'ı backend'e gönder
+    async sendTokenToBackend(user) {
+        try {
+            const idToken = await user.getIdToken();
+            
+            console.log("Backend'e token gönderiliyor...");
+            
+            const response = await fetch('/firebase/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idToken: idToken,
+                    user: {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        emailVerified: user.emailVerified
+                    }
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log("Backend doğrulaması başarılı:", result);
+                // Başarılı giriş - yönlendir
+                window.location.href = result.redirect || '/dashboard';
+            } else {
+                console.error("Backend doğrulaması başarısız:", result);
+                this.showError(result.message);
+            }
+            
+            return result;
+        } catch (error) {
+            console.error('Backend gönderme hatası:', error);
+            return { success: false, message: 'Sunucu hatası' };
+        }
+    }
+
+    // Hata göster
+    showError(message) {
+        console.error("Hata gösteriliyor:", message);
+        
+        // Toast notification göster
+        const toast = document.createElement('div');
+        toast.className = 'toast error';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="bi bi-exclamation-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+
+    // Başarı mesajı göster
+    showSuccess(message) {
+        console.log("Başarı mesajı gösteriliyor:", message);
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast success';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="bi bi-check-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+
+    // Auth state listener
+    onAuthStateChanged(callback) {
+        return this.auth.onAuthStateChanged(callback);
+    }
+}
+
+// Global instance
+const firebaseAuth = new FirebaseAuthManager();
+
+// Toast notification styles
+const toastStyles = `
+<style>
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-left: 4px solid #a02622;
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border-left: 4px solid #1e7e34;
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.toast-content i {
+    font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .toast {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+}
+</style>
+`;
+
+// Add styles to head
+document.head.insertAdjacentHTML('beforeend', toastStyles);
+
+// Auto-redirect if already authenticated
+firebaseAuth.onAuthStateChanged(async (user) => {
+    if (user) {
+        console.log("Kullanıcı zaten authenticated:", user);
+        
+        // Backend'e token göndererek session kontrolü yap
+        const idToken = await user.getIdToken();
+        const response = await fetch('/firebase/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ idToken })
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+                console.log("Otomatik yönlendirme dashboard'a");
+                window.location.href = result.redirect || '/dashboard';
+            }
+        }
+    } else {
+        console.log("Kullanıcı giriş yapmamış");
+    }
+});
+
+console.log("Firebase Auth Manager yüklendi. Proje:", firebaseConfig.projectId);
+</script>

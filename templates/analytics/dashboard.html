@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - Dövmeci Stüdyosu{% endblock %}
+
+{% block page_title %}Analytics Dashboard{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group">
+    <button class="btn btn-outline-secondary" onclick="exportReport()">
+        <i class="bi bi-download"></i> Rapor İndir
+    </button>
+    <button class="btn btn-outline-primary" onclick="refreshData()">
+        <i class="bi bi-arrow-clockwise"></i> Yenile
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Zaman Aralığı Seçici -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary" onclick="setPeriod('today')">Bugün</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="setPeriod('week')">Bu Hafta</button>
+                    <button type="button" class="btn btn-outline-primary active" onclick="setPeriod('month')">Bu Ay</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="setPeriod('quarter')">Bu Çeyrek</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="setPeriod('year')">Bu Yıl</button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <input type="date" class="form-control" id="customDate" onchange="setCustomDate()">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ana Metrikler -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Toplam Gelir
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₺{{ "%.2f"|format(total_revenue) }}</div>
+                        <div class="text-xs text-muted">
+                            <i class="bi bi-arrow-up text-success"></i> {{ revenue_growth }}%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Net Kâr
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₺{{ "%.2f"|format(net_profit) }}</div>
+                        <div class="text-xs text-muted">
+                            <i class="bi bi-arrow-up text-success"></i> {{ profit_growth }}%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-graph-up fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Randevular
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_appointments }}</div>
+                        <div class="text-xs text-muted">
+                            <i class="bi bi-arrow-up text-success"></i> {{ appointments_growth }}%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-calendar-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Müşteriler
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_customers }}</div>
+                        <div class="text-xs text-muted">
+                            <i class="bi bi-arrow-up text-success"></i> {{ customers_growth }}%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-people fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafikler -->
+<div class="row mb-4">
+    <!-- Gelir Grafiği -->
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Gelir Trendi</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kategori Dağılımı -->
+    <div class="col-lg-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Gelir Dağılımı</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueDistributionChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sanatçı Performansı -->
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Sanatçı Performansı</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Sanatçı</th>
+                                <th>Randevu Sayısı</th>
+                                <th>Tamamlanma Oranı</th>
+                                <th>Gelir</th>
+                                <th>Ortalama Fiyat</th>
+                                <th>Müşteri Memnuniyeti</th>
+                                <th>Performans</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for artist in artist_performance %}
+                            <tr>
+                                <td>{{ artist.artist.name }}</td>
+                                <td>{{ artist.appointment_count }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" style="width: {{ artist.completion_rate }}%">
+                                            {{ "%.1f"|format(artist.completion_rate) }}%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>₺{{ "%.2f"|format(artist.revenue) }}</td>
+                                <td>₺{{ "%.2f"|format(artist.average_price) }}</td>
+                                <td>
+                                    {% if artist.satisfaction %}
+                                    <div class="text-warning">
+                                        {% for i in range(artist.satisfaction|int()) %}
+                                        <i class="bi bi-star-fill"></i>
+                                        {% endfor %}
+                                        {% for i in range(5 - artist.satisfaction|int()) %}
+                                        <i class="bi bi-star"></i>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if artist.performance_score > 80 else 'warning' if artist.performance_score > 60 else 'danger' }}">
+                                        {{ "%.0f"|format(artist.performance_score) }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Popüler Hizmetler -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Popüler Hizmetler</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="popularServicesChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Müşteri Segmentasyonu -->
+    <div class="col-lg-6">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Müşteri Segmentasyonu</h6>
+            </div>
+            <div class="card-body">
+                <canvas id="customerSegmentChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dönüşüm Hunisi -->
+<div class="row mb-4">
+    <div class="col-lg-12">
+        <div class="card shadow">
+            <div class="card-header">
+                <h6 class="m-0 font-weight-bold text-primary">Dönüşüm Hunisi</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2 text-center">
+                        <div class="funnel-stage">
+                            <div class="stage-number">{{ conversion_funnel.website_visitors }}</div>
+                            <div class="stage-label">Site Ziyaretçi</div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="bi bi-arrow-down"></i>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="funnel-stage">
+                            <div class="stage-number">{{ conversion_funnel.contact_submissions }}</div>
+                            <div class="stage-label">İletişim Formu</div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="bi bi-arrow-down"></i>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="funnel-stage">
+                            <div class="stage-number">{{ conversion_funnel.appointment_requests }}</div>
+                            <div class="stage-label">Randevu Talebi</div>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="bi bi-arrow-down"></i>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <div class="funnel-stage">
+                            <div class="stage-number">{{ conversion_funnel.completed_appointments }}</div>
+                            <div class="stage-label">Tamamlanan Randevu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Gelir grafiği
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revenueChart = new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+        labels: {{ revenue_chart.labels|tojson }},
+        datasets: [{
+            label: 'Gelir',
+            data: {{ revenue_chart.data|tojson }},
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '₺' + value.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Gelir dağılımı
+const distributionCtx = document.getElementById('revenueDistributionChart').getContext('2d');
+const distributionChart = new Chart(distributionCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ revenue_distribution.labels|tojson }},
+        datasets: [{
+            data: {{ revenue_distribution.data|tojson }},
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// Popüler hizmetler
+const servicesCtx = document.getElementById('popularServicesChart').getContext('2d');
+const servicesChart = new Chart(servicesCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ popular_services.labels|tojson }},
+        datasets: [{
+            label: 'Randevu Sayısı',
+            data: {{ popular_services.data|tojson }},
+            backgroundColor: 'rgba(54, 162, 235, 0.8)'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Müşteri segmentasyonu
+const segmentCtx = document.getElementById('customerSegmentChart').getContext('2d');
+const segmentChart = new Chart(segmentCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ customer_segments.labels|tojson }},
+        datasets: [{
+            data: {{ customer_segments.data|tojson }},
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// Periyot ayarlama
+function setPeriod(period) {
+    // Periyot değiştirme ve veri yenileme
+    location.href = `/analytics?period=${period}`;
+}
+
+// Özel tarih
+function setCustomDate() {
+    const date = document.getElementById('customDate').value;
+    location.href = `/analytics?date=${date}`;
+}
+
+// Veri yenileme
+function refreshData() {
+    location.reload();
+}
+
+// Rapor indirme
+function exportReport() {
+    window.open('/analytics/export', '_blank');
+}
+</script>
+
+<style>
+.funnel-stage {
+    padding: 20px;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.stage-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.stage-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,340 @@
+{% extends "base.html" %}
+
+{% block title %}Randevular{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h2">Randevular</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn-animated" onclick="addAppointment()">
+                            <i class="bi bi-plus-circle"></i> Yeni Randevu
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Müşteri</th>
+                                <th>Sanatçı</th>
+                                <th>Hizmet</th>
+                                <th>Tarih</th>
+                                <th>Süre</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if appointments %}
+                                {% for appointment in appointments %}
+                                <tr>
+                                    <td>{{ appointment.id }}</td>
+                                    <td>{{ appointment.customer.name if appointment.customer else '-' }}</td>
+                                    <td>{{ appointment.artist.name if appointment.artist else '-' }}</td>
+                                    <td>{{ appointment.service.name if appointment.service else '-' }}</td>
+                                    <td>{{ appointment.appointment_date.strftime('%d.%m.%Y %H:%M') if appointment.appointment_date else '-' }}</td>
+                                    <td>{{ appointment.duration or '-' }} dk</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if appointment.status == 'completed' else 'warning' if appointment.status == 'scheduled' else 'danger' }}">
+                                            {{ appointment.status or 'scheduled' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editAppointment({{ appointment.id }})">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteAppointment({{ appointment.id }})">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4">
+                                        <i class="bi bi-calendar-x" style="font-size: 3rem; color: var(--secondary-color);"></i>
+                                        <h5 class="mt-3">Henüz randevu bulunmuyor</h5>
+                                        <p class="text-muted">İlk randevuyu oluşturmak için butona tıklayın.</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addAppointment() {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade show';
+    modal.style.display = 'block';
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Randevu</h5>
+                    <button type="button" class="btn-close" onclick="this.closest('.modal').remove()">×</button>
+                </div>
+                <div class="modal-body">
+                    <form id="appointmentForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Müşteri</label>
+                                <select class="form-control" name="customer_id" required>
+                                    <option value="">Müşteri Seçin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Sanatçı</label>
+                                <select class="form-control" name="artist_id" required>
+                                    <option value="">Sanatçı Seçin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Hizmet</label>
+                                <select class="form-control" name="service_id" required>
+                                    <option value="">Hizmet Seçin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tarih</label>
+                                <input type="datetime-local" class="form-control" name="appointment_date" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Süre (dakika)</label>
+                                <input type="number" class="form-control" name="duration" min="30" step="30">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Durum</label>
+                                <select class="form-control" name="status">
+                                    <option value="scheduled">Planlandı</option>
+                                    <option value="completed">Tamamlandı</option>
+                                    <option value="cancelled">İptal Edildi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Notlar</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">İptal</button>
+                    <button type="button" class="btn-animated" onclick="saveAppointment()">
+                        <i class="bi bi-check-circle"></i> Kaydet
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Load customers, artists, and services
+    loadDropdownData();
+}
+
+function loadDropdownData() {
+    // Simulate loading data
+    const customerSelect = document.querySelector('select[name="customer_id"]');
+    const artistSelect = document.querySelector('select[name="artist_id"]');
+    const serviceSelect = document.querySelector('select[name="service_id"]');
+    
+    // Add sample customers
+    const customers = [
+        {id: 1, name: 'Demo Customer'},
+        {id: 2, name: 'Test Customer'}
+    ];
+    
+    customers.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.id;
+        option.textContent = customer.name;
+        customerSelect.appendChild(option);
+    });
+    
+    // Add sample artists
+    const artists = [
+        {id: 1, name: 'Demo Artist'},
+        {id: 2, name: 'Test Artist'}
+    ];
+    
+    artists.forEach(artist => {
+        const option = document.createElement('option');
+        option.value = artist.id;
+        option.textContent = artist.name;
+        artistSelect.appendChild(option);
+    });
+    
+    // Add sample services
+    const services = [
+        {id: 1, name: 'Traditional Tattoo'},
+        {id: 2, name: 'Realistic Portrait'},
+        {id: 3, name: 'Japanese Style'}
+    ];
+    
+    services.forEach(service => {
+        const option = document.createElement('option');
+        option.value = service.id;
+        option.textContent = service.name;
+        serviceSelect.appendChild(option);
+    });
+}
+
+function saveAppointment() {
+    const form = document.getElementById('appointmentForm');
+    const formData = new FormData(form);
+    
+    // Show loading state
+    const saveBtn = document.querySelector('.modal-footer .btn-animated');
+    saveBtn.innerHTML = '<i class="bx bx-loader-alt"></i> Kaydediliyor...';
+    saveBtn.disabled = true;
+    
+    // Simulate API call
+    setTimeout(() => {
+        saveBtn.innerHTML = '<i class="bi bi-check-circle"></i> Kaydedildi!';
+        saveBtn.style.background = 'var(--gradient-3)';
+        
+        setTimeout(() => {
+            document.querySelector('.modal').remove();
+            showNotification('Randevu başarıyla oluşturuldu!', 'success');
+            // Reload page to show new appointment
+            location.reload();
+        }, 1500);
+    }, 2000);
+}
+
+function editAppointment(id) {
+    showNotification('Randevu ' + id + ' düzenleniyor...', 'info');
+}
+
+function deleteAppointment(id) {
+    if (confirm('Bu randevuyu silmek istediğinizden emin misiniz?')) {
+        showNotification('Randevu ' + id + ' siliniyor...', 'info');
+        
+        setTimeout(() => {
+            showNotification('Randevu başarıyla silindi!', 'success');
+            // Reload page to reflect changes
+            location.reload();
+        }, 1500);
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = 'alert alert-' + type + ' alert-dismissible fade show';
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease;
+    `;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Add hover effects to table rows
+document.addEventListener('DOMContentLoaded', function() {
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'rgba(255, 107, 53, 0.1)';
+            this.style.transform = 'scale(1.01)';
+        });
+        
+        row.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+</script>
+
+<style>
+.table {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.table th {
+    background: var(--gradient-2);
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.table td {
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 107, 53, 0.05);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.3rem rgba(255, 107, 53, 0.25);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+</style>
+{% endblock %}

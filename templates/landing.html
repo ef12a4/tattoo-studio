@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Tattoo Studio - Professional Tattoo Studio Management{% endblock %}
+
+{% block login_content %}
+<div class="hero-section">
+    {% include 'components/parallax_landing.html' %}
+</div>
+
+<!-- Features Section -->
+<section class="content-section">
+    <div class="content-container">
+        <h2 class="section-title">Platform Özellikleri</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class='bx bxs-palette'></i>
+                </div>
+                <h3 class="feature-title">Website Builder</h3>
+                <p class="feature-description">
+                    Drag & drop website builder ile saniyeler içinde profesyonel web sitesi oluşturun.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class='bx bxs-calendar'></i>
+                </div>
+                <h3 class="feature-title">Online Randevu</h3>
+                <p class="feature-description">
+                    Otomatik randevu sistemi ile müşteri yönetimini kolaylaştırın.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class='bx bxs-credit-card'></i>
+                </div>
+                <h3 class="feature-title">E-ticaret</h3>
+                <p class="feature-description">
+                    Ürün satışı, stok yönetimi ve online ödeme sistemleri.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class='bx bxs-chart'></i>
+                </div>
+                <h3 class="feature-title">Analytics</h3>
+                <p class="feature-description">
+                    Detaylı raporlar ve analizler ile işinizi büyütün.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class='bx bxs-mobile'></i>
+                </div>
+                <h3 class="feature-title">Mobil Uyum</h3>
+                <p class="feature-description">
+                    Tüm cihazlarda mükemmel çalışan responsive tasarım.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span class="stat-label">Sanatçı</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Müşteri</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">100K+</span>
+            <span class="stat-label">Randevu</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">99.9%</span>
+            <span class="stat-label">Memnuniyet</span>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="cta-title">Hemen Başlayın</h2>
+        <p class="cta-description">
+            Profesyonel tattoo stüdyosu yönetimi için en gelişmiş platforma katılın. 
+            30 günlük ücretsiz deneme süresi başlatın.
+        </p>
+        <div class="cta-buttons">
+            <a href="/register" class="hero-btn hero-btn-primary">Ücretsiz Deneyin</a>
+            <a href="#pricing" class="hero-btn hero-btn-secondary">Fiyatlandırma</a>
+        </div>
+    </div>
+</section>
+
+<!-- Component Showcase -->
+<section class="content-section">
+    <div class="content-container">
+        <h2 class="section-title">Modern Component'ler</h2>
+        {% include 'components/showcase.html' %}
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Enhanced parallax scrolling with multiple layers
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallaxElements = document.querySelectorAll('.parallax-bg');
+    
+    parallaxElements.forEach((element, index) => {
+        const speed = 0.3 + (index * 0.1);
+        const yPos = -(scrolled * speed);
+        element.style.transform = `translateY(${yPos}px)`;
+    });
+    
+    // Update scroll indicator
+    updateScrollIndicator();
+});
+
+function updateScrollIndicator() {
+    const sections = document.querySelectorAll('section');
+    const scrollDots = document.querySelectorAll('.scroll-dot');
+    
+    let currentSection = 0;
+    sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2) {
+            currentSection = index;
+        }
+    });
+    
+    scrollDots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSection);
+    });
+}
+
+// Smooth scroll for navigation
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// Intersection Observer for animations
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+        }
+    });
+}, observerOptions);
+
+// Observe all sections
+document.querySelectorAll('.feature-card, .stat-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(50px)';
+    el.style.transition = 'all 0.6s ease';
+    observer.observe(el);
+});
+
+// Add hover effect to hero buttons
+document.querySelectorAll('.hero-btn').forEach(btn => {
+    btn.addEventListener('mouseenter', function(e) {
+        const rect = this.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+        ripple.style.width = '10px';
+        ripple.style.height = '10px';
+        ripple.style.left = x - 5 + 'px';
+        ripple.style.top = y - 5 + 'px';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.transition = 'transform 0.6s, opacity 0.6s';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.style.transform = 'scale(4)';
+            ripple.style.opacity = '0';
+        }, 10);
+    });
+});
+
+// Add typing effect to hero title
+const heroTitle = document.querySelector('.hero-title');
+if (heroTitle) {
+    const text = heroTitle.textContent;
+    heroTitle.textContent = '';
+    
+    let index = 0;
+    const typeWriter = () => {
+        if (index < text.length) {
+            heroTitle.textContent += text.charAt(index);
+            index++;
+            setTimeout(typeWriter, 100);
+        }
+    };
+    
+    setTimeout(typeWriter, 1000);
+}
+</script>
+{% endblock %}

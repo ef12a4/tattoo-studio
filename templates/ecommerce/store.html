@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+
+{% block title %}Dövme Store - Online Ürün Satışı{% endblock %}
+
+{% block page_title %}E-ticaret Store{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+        <i class="bi bi-plus-circle"></i> Ürün Ekle
+    </button>
+    <button class="btn btn-outline-secondary" onclick="exportProducts()">
+        <i class="bi bi-download"></i> Export
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- İstatistikler -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Toplam Gelir
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₺{{ "%.2f"|format(total_revenue) }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Siparişler
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_orders }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-cart fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Ürünler
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_products }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-box fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Stok Değeri
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">₺{{ "%.2f"|format(inventory_value) }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="bi bi-archive fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtreler ve Arama -->
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" class="form-control" name="search" placeholder="Ürün ara..." value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="category">
+                    <option value="">Tüm Kategoriler</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {{ 'selected' if request.args.get('category')|int == category.id else '' }}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="status">
+                    <option value="">Tüm Durumlar</option>
+                    <option value="active" {{ 'selected' if request.args.get('status') == 'active' else '' }}>Aktif</option>
+                    <option value="draft" {{ 'selected' if request.args.get('status') == 'draft' else '' }}>Taslak</option>
+                    <option value="archived" {{ 'selected' if request.args.get('status') == 'archived' else '' }}>Arşiv</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-control" name="artist">
+                    <option value="">Tüm Sanatçılar</option>
+                    {% for artist in artists %}
+                    <option value="{{ artist.id }}" {{ 'selected' if request.args.get('artist')|int == artist.id else '' }}>
+                        {{ artist.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Filtrele
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="clearFilters()">
+                        <i class="bi bi-x"></i> Temizle
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Ürünler Tablosu -->
+<div class="card shadow">
+    <div class="card-body">
+        {% if products %}
+        <div class="table-responsive">
+            <table class="table table-bordered" id="productsTable">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                        </th>
+                        <th>Ürün</th>
+                        <th>Kategori</th>
+                        <th>Fiyat</th>
+                        <th>Stok</th>
+                        <th>Durum</th>
+                        <th>Sanatçı</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="product-checkbox" value="{{ product.id }}">
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if product.images.first() %}
+                                <img src="{{ product.images.first().image_url }}" alt="{{ product.name }}" class="rounded me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                                {% else %}
+                                <div class="rounded me-2 bg-light d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-bold">{{ product.name }}</div>
+                                    <small class="text-muted">SKU: {{ product.sku }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ product.category.name if product.category else '-' }}</td>
+                        <td>
+                            ₺{{ "%.2f"|format(product.price) }}
+                            {% if product.compare_price %}
+                            <br><small class="text-muted"><s>₺{{ "%.2f"|format(product.compare_price) }}</s></small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {{ 'bg-success' if product.inventory_quantity > 10 else 'bg-warning' if product.inventory_quantity > 0 else 'bg-danger' }}">
+                                {{ product.inventory_quantity }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if product.status == 'active' else 'secondary' if product.status == 'draft' else 'danger' }}">
+                                {{ product.status }}
+                            </span>
+                        </td>
+                        <td>{{ product.artist.name if product.artist else '-' }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ url_for('edit_product', id=product.id) }}" class="btn btn-outline-primary">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button class="btn btn-outline-info" onclick="duplicateProduct({{ product.id }})">
+                                    <i class="bi bi-files"></i>
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="deleteProduct({{ product.id }})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-box text-muted" style="font-size: 4rem;"></i>
+            <h5 class="mt-3 text-muted">Henüz ürün bulunmuyor</h5>
+            <p class="text-muted">İlk ürünü eklemek için aşağıdaki butonu kullanın.</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                <i class="bi bi-plus-circle"></i> İlk Ürünü Ekle
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Ürün Ekleme Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Ürün Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Sol Kolon - Temel Bilgiler -->
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ürün Adı *</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">SKU *</label>
+                                    <input type="text" class="form-control" name="sku" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Açıklama</label>
+                                <textarea class="form-control" name="description" rows="4"></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kısa Açıklama</label>
+                                <textarea class="form-control" name="short_description" rows="2"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Fiyat *</label>
+                                    <input type="number" class="form-control" name="price" step="0.01" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Karşılaştırma Fiyatı</label>
+                                    <input type="number" class="form-control" name="compare_price" step="0.01">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Maliyet Fiyatı</label>
+                                    <input type="number" class="form-control" name="cost_price" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Ağırlık (kg)</label>
+                                    <input type="number" class="form-control" name="weight" step="0.01">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Boyutlar</label>
+                                    <input type="text" class="form-control" name="dimensions" placeholder="10x5x2 cm">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Stok Miktarı</label>
+                                    <input type="number" class="form-control" name="inventory_quantity" value="0">
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label">Vergi Oranı (%)</label>
+                                    <input type="number" class="form-control" name="tax_rate" value="18" step="0.01">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Kategori</label>
+                                    <select class="form-control" name="category_id">
+                                        <option value="">Kategori Seçin</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Sanatçı</label>
+                                    <select class="form-control" name="artist_id">
+                                        <option value="">Sanatçı Seçin</option>
+                                        {% for artist in artists %}
+                                        <option value="{{ artist.id }}">{{ artist.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Durum</label>
+                                    <select class="form-control" name="status">
+                                        <option value="active">Aktif</option>
+                                        <option value="draft">Taslak</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- SEO Alanları -->
+                            <div class="border rounded p-3 mb-3">
+                                <h6>SEO Ayarları</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">SEO Başlığı</label>
+                                        <input type="text" class="form-control" name="seo_title">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">SEO Açıklaması</label>
+                                        <input type="text" class="form-control" name="seo_description">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sağ Kolon - Resimler -->
+                        <div class="col-md-4">
+                            <div class="border rounded p-3">
+                                <h6>Ürün Resimleri</h6>
+                                <div id="imagePreview" class="mb-3">
+                                    <!-- Resim önizlemeleri -->
+                                </div>
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="addImageField()">
+                                    <i class="bi bi-plus"></i> Resim Ekle
+                                </button>
+                            </div>
+
+                            <div class="border rounded p-3 mt-3">
+                                <h6>Ürün Varyasyonları</h6>
+                                <div id="variantContainer">
+                                    <!-- Varyasyonlar -->
+                                </div>
+                                <button type="button" class="btn btn-outline-primary w-100" onclick="addVariant()">
+                                    <i class="bi bi-plus"></i> Varyasyon Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Ürünü Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Ürün seçimi
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.product-checkbox');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+    });
+}
+
+// Filtreleri temizle
+function clearFilters() {
+    window.location.href = '{{ url_for("store") }}';
+}
+
+// Ürün silme
+function deleteProduct(id) {
+    if (confirm('Bu ürünü silmek istediğinizden emin misiniz?')) {
+        fetch(`/api/v1/products/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Hata: ' + data.message);
+            }
+        });
+    }
+}
+
+// Ürün kopyalama
+function duplicateProduct(id) {
+    fetch(`/api/v1/products/${id}/duplicate`, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Hata: ' + data.message);
+        }
+    });
+}
+
+// Export
+function exportProducts() {
+    window.open('/api/v1/products/export', '_blank');
+}
+
+// Resim alanı ekle
+function addImageField() {
+    const container = document.getElementById('imagePreview');
+    const imageField = document.createElement('div');
+    imageField.className = 'mb-2';
+    imageField.innerHTML = `
+        <input type="file" class="form-control" name="images[]" accept="image/*">
+        <input type="text" class="form-control mt-1" name="image_alts[]" placeholder="Alt text">
+    `;
+    container.appendChild(imageField);
+}
+
+// Varyasyon ekle
+function addVariant() {
+    const container = document.getElementById('variantContainer');
+    const variant = document.createElement('div');
+    variant.className = 'border rounded p-2 mb-2';
+    variant.innerHTML = `
+        <div class="row">
+            <div class="col-6">
+                <input type="text" class="form-control" name="variant_titles[]" placeholder="Varyasyon Adı">
+            </div>
+            <div class="col-4">
+                <input type="number" class="form-control" name="variant_prices[]" placeholder="Fiyat">
+            </div>
+            <div class="col-2">
+                <button type="button" class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(variant);
+}
+
+// DataTable
+$(document).ready(function() {
+    $('#productsTable').DataTable({
+        responsive: true,
+        pageLength: 25,
+        order: [[1, 'asc']]
+    });
+});
+</script>
+{% endblock %}

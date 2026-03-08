@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Ödeme Gateway{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="content-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h2">Ödeme Gateway</h2>
+                    <div class="btn-toolbar">
+                        <button class="btn-animated" onclick="addPaymentMethod()">
+                            <i class="bi bi-plus-circle"></i> Ödeme Yöntemi Ekle
+                        </button>
+                    </div>
+                </div>
+                
+                {% include 'components/payment_gateway.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function addPaymentMethod() {
+    // Simulate adding payment method
+    const card = document.createElement('div');
+    card.className = 'content-card';
+    card.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>Yeni Ödeme Yöntemi</h4>
+            <button class="btn-animated" onclick="this.parentElement.parentElement.remove()">
+                <i class="bi bi-x-circle"></i> İptal
+            </button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ödeme Yöntemi Adı</label>
+            <input type="text" class="form-control" placeholder="Örn: PayPal, Stripe">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">API Anahtarı</label>
+            <input type="password" class="form-control" placeholder="API anahtarını girin">
+        </div>
+        <div class="mb-3">
+            <button class="btn-animated">
+                <i class="bi bi-check-circle"></i> Kaydet
+            </button>
+        </div>
+    `;
+    
+    document.querySelector('.container-fluid .row .col-12').appendChild(card);
+    
+    // Animate the new card
+    setTimeout(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+    }, 100);
+}
+
+// Add interactive hover effects to payment form
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentInputs = document.querySelectorAll('.payment-input');
+    
+    paymentInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+            this.parentElement.style.boxShadow = '0 10px 30px rgba(255, 107, 53, 0.2)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+            this.parentElement.style.boxShadow = 'none';
+        });
+    });
+    
+    // Add ripple effect to buttons
+    const buttons = document.querySelectorAll('.payment-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+            ripple.style.width = '10px';
+            ripple.style.height = '10px';
+            ripple.style.left = e.offsetX - 5 + 'px';
+            ripple.style.top = e.offsetY - 5 + 'px';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.transition = 'transform 0.6s, opacity 0.6s';
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.style.transform = 'scale(4)';
+                ripple.style.opacity = '0';
+            }, 10);
+        });
+    });
+});
+</script>
+{% endblock %}

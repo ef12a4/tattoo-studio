@@ -1,0 +1,495 @@
+<!-- Glassmorphism UI Components - Codehalweb inspired -->
+<style>
+.glassmorphism-components {
+    padding: 40px 0;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    margin: 20px 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.glass-button {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 15px 30px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.glass-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(255, 255, 255, 0.2);
+}
+
+.glass-button:hover::before {
+    left: 100%;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.glass-input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.3rem rgba(255, 107, 53, 0.25);
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.02);
+}
+
+.glass-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-modal {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    display: none;
+}
+
+.glass-modal.active {
+    display: block;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.glass-badge {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.glass-badge:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.glass-navigation {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    padding: 15px 25px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-nav-item {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.glass-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.glass-nav-item.active {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.glass-progress {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.glass-progress-bar {
+    height: 100%;
+    background: var(--gradient-2);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.glass-progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.glass-tooltip {
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-tooltip.show {
+    opacity: 1;
+}
+
+.glass-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.glass-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.glass-switch-slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 13px;
+    transition: all 0.3s ease;
+}
+
+.glass-switch input:checked + .glass-switch-slider {
+    background: var(--secondary-color);
+}
+
+.glass-switch input:checked + .glass-switch-slider::before {
+    transform: translateX(30px);
+}
+
+.glass-switch-slider::before {
+    content: '';
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 0;
+    bottom: 0;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Floating action button */
+.glass-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+}
+
+.glass-fab:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: var(--secondary-color);
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+}
+
+/* Notification */
+.glass-notification {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    border-left: 4px solid var(--secondary-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .glass-card {
+        padding: 20px;
+        margin: 15px 0;
+    }
+    
+    .glass-modal {
+        width: 95%;
+        padding: 30px 20px;
+    }
+    
+    .glass-navigation {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .glass-fab {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+    }
+}
+</style>
+
+<div class="glassmorphism-components">
+    <!-- Glass Card Example -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glassmorphism Kart</h3>
+        <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+            Modern glassmorphism efekti ile tasarlanmış kart. Blur arka plan ve yarı saydam arka plan ile premium görünüm.
+        </p>
+        <div style="margin-top: 20px;">
+            <button class="glass-button">Glass Buton</button>
+        </div>
+    </div>
+
+    <!-- Glass Form -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glass Form</h3>
+        <div style="margin-bottom: 15px;">
+            <input type="text" class="glass-input" placeholder="Adınızı girin...">
+        </div>
+        <div style="margin-bottom: 15px;">
+            <input type="email" class="glass-input" placeholder="E-posta adresiniz...">
+        </div>
+        <button class="glass-button" style="width: 100%;">Gönder</button>
+    </div>
+
+    <!-- Glass Navigation -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glass Navigation</h3>
+        <nav class="glass-navigation">
+            <a href="#" class="glass-nav-item active">Ana Sayfa</a>
+            <a href="#" class="glass-nav-item">Portfolyo</a>
+            <a href="#" class="glass-nav-item">Hakkımızda</a>
+            <a href="#" class="glass-nav-item">İletişim</a>
+        </nav>
+    </div>
+
+    <!-- Glass Progress Bar -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Progress Bar</h3>
+        <div class="glass-progress">
+            <div class="glass-progress-bar" style="width: 75%;"></div>
+        </div>
+        <p style="color: rgba(255, 255, 255, 0.6); margin-top: 10px; font-size: 14px;">
+            Profil tamamlanması: %75
+        </p>
+    </div>
+
+    <!-- Glass Badges -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glass Badges</h3>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <span class="glass-badge">Premium</span>
+            <span class="glass-badge">Verified</span>
+            <span class="glass-badge">Top Artist</span>
+            <span class="glass-badge">5+ Years</span>
+        </div>
+    </div>
+
+    <!-- Glass Switch -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glass Switch</h3>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <label class="glass-switch">
+                <input type="checkbox">
+                <span class="glass-switch-slider"></span>
+            </label>
+            <span style="color: rgba(255, 255, 255, 0.8);">Dark Mode</span>
+        </div>
+    </div>
+
+    <!-- Glass Modal Trigger -->
+    <div class="glass-card">
+        <h3 style="color: white; margin-bottom: 15px;">Glass Modal</h3>
+        <button class="glass-button" onclick="openModal()">Modal Aç</button>
+    </div>
+</div>
+
+<!-- Glass Modal -->
+<div class="glass-modal" id="glassModal">
+    <h3 style="color: white; margin-bottom: 20px;">Glass Modal</h3>
+    <p style="color: rgba(255, 255, 255, 0.8); line-height: 1.6; margin-bottom: 20px;">
+        Bu modern glassmorphism modal'i. Blur arka plan ve yarı saydam efektleri ile premium görünüm.
+    </p>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="glass-button" style="background: rgba(255, 255, 255, 0.05);">İptal</button>
+        <button class="glass-button">Tamam</button>
+    </div>
+</div>
+
+<!-- Floating Action Button -->
+<div class="glass-fab" onclick="showNotification()">
+    <i class='bx bx-plus' style="color: white; font-size: 24px;"></i>
+</div>
+
+<!-- Notification -->
+<div id="notificationContainer"></div>
+
+<script>
+function openModal() {
+    document.getElementById('glassModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('glassModal').classList.remove('active');
+}
+
+// Close modal when clicking outside
+document.getElementById('glassModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+
+function showNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'glass-notification';
+    notification.innerHTML = `
+        <h4 style="color: white; margin-bottom: 10px;">Bildirim!</h4>
+        <p style="color: rgba(255, 255, 255, 0.8); margin: 0;">Bu bir glassmorphism bildirimidir.</p>
+    `;
+    
+    document.getElementById('notificationContainer').appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+
+// Add interactive hover effects
+document.querySelectorAll('.glass-card').forEach(card => {
+    card.addEventListener('mousemove', function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1))`;
+        card.style.backdropFilter = 'blur(20px)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        card.style.background = 'rgba(255, 255, 255, 0.1)';
+        card.style.backdropFilter = 'blur(20px)';
+    });
+});
+
+// Progress bar animation
+document.querySelectorAll('.glass-progress-bar').forEach(bar => {
+    const width = bar.style.width;
+    bar.style.width = '0%';
+    
+    setTimeout(() => {
+        bar.style.width = width;
+    }, 100);
+});
+</script>

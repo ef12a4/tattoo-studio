@@ -1,0 +1,25 @@
+# Railway Configuration
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[env]
+FLASK_ENV = "production"
+PYTHON_VERSION = "3.9"
+
+[[services]]
+name = "tattoo-studio"
+
+[services.variables]
+PORT = "5000"
+SECRET_KEY = "${{ secrets.SECRET_KEY }}"
+DATABASE_URL = "${{ secrets.DATABASE_URL }}"
+MAIL_SERVER = "${{ secrets.MAIL_SERVER }}"
+MAIL_PORT = "${{ secrets.MAIL_PORT }}"
+MAIL_USERNAME = "${{ secrets.MAIL_USERNAME }}"
+MAIL_PASSWORD = "${{ secrets.MAIL_PASSWORD }}"
